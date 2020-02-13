@@ -7,24 +7,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-# set drive root from environment, else use default
-#if(NOT DEFINED DRIVE_ROOT)
-#if(DEFINED ENV{DRIVE_ROOT})
-#set(DRIVE_ROOT "$ENV{DRIVE_ROOT}")
-#else()
-#set(DRIVE_ROOT "/opt/plusai")
-#endif()
-#endif()
-#message(STATUS "DRIVE_ROOT: ${DRIVE_ROOT}")
-
-#list(APPEND CMAKE_PREFIX_PATH "${DRIVE_ROOT}")
-#find_package(drive REQUIRED)
-#include_directories(${drive_INCLUDE_DIRS})
-#include_directories(${drive_INCLUDE_DIRS}/common)
-#include_directories(${drive_INCLUDE_DIRS}/proto)
-
-#link_directories(${drive_LIBRARY_DIRS})
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(SRCS
