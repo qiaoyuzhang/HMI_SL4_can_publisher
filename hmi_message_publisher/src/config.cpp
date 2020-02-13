@@ -1,6 +1,5 @@
 #include "hmi_message_publisher/config.h"
 
-
 DEFINE_bool(HMI_SL4_use_threat_obstacle_topic,true,"");
 DEFINE_string(HMI_SL4_perception_obstacle_topic,"/perception/obstacles", "");
 DEFINE_string(HMI_SL4_threat_obstacle_topic,"/threat_assessment/obstacles","");
