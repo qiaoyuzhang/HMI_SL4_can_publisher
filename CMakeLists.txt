@@ -3,15 +3,13 @@ cmake_minimum_required(VERSION 3.5.1)
 project(HMI_SL4_can_publisher)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-
-
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 # plusai cmake module path
 set(PLUSAI_CMAKE_MODULE_PATH "/opt/plusai/var/cmake/Modules" CACHE PATH "")
+
 # cmake module path
 list(APPEND CMAKE_MODULE_PATH ${PLUSAI_CMAKE_MODULE_PATH})
 message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+
 # include plusai_util.cmake
 include(${PLUSAI_CMAKE_MODULE_PATH}/plusai_util.cmake RESULT_VARIABLE PLUSAI_UTIL_CMAKE)
 if ("${PLUSAI_UTIL_CMAKE}" STREQUAL "NOTFOUND")
@@ -32,7 +30,6 @@ if(NOT DEFINED DRIVE_ROOT)
     endif()
 endif()
 message(STATUS "DRIVE_ROOT: ${DRIVE_ROOT}")
-
 
 # Global flag to cause add_library to create shared libraries if ON.
 set(BUILD_SHARED_LIBS ON)
@@ -88,6 +85,7 @@ include_directories(SYSTEM ${ROS_INSTALL_DIR}/include)
 link_directories(${ROS_INSTALL_DIR}/lib)
 set(ROS_LIBRARIES
     roscpp
+    can_common
     cpp_common
     rosconsole
     rosconsole_bridge
@@ -127,10 +125,10 @@ message(STATUS "RULE_LAUNCH_COMPILE: ${GLOBAL_RULE_LAUNCH_COMPILE}")
 get_property(GLOBAL_RULE_LAUNCH_LINK GLOBAL PROPERTY RULE_LAUNCH_LINK)
 message(STATUS "RULE_LAUNCH_LINK: ${GLOBAL_RULE_LAUNCH_LINK}")
 
-# now we should have all the global variables set
-#message_project_header()
-
 #################### LOAD MODULES
+
+# Boost
+find_package(Boost REQUIRED COMPONENTS system)
 
 # Eigen
 find_package(Eigen3 REQUIRED)
@@ -172,17 +170,13 @@ add_custom_target(check
     COMMAND ${CMAKE_CTEST_COMMAND})
 enable_testing()
 
-
 #################### COMMON/SHARED DIRECTORIES
 
 #################### LOG SETUP VARS
 
 #################### ADD SUBPROJECT DRECTORIES
 
-add_subdirectory(can_common)
 add_subdirectory(hmi_message)
 add_subdirectory(hmi_message_publisher)
 
 #################### Gen CMake Configuration File
-
-#message_project_footer()

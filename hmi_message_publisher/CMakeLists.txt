@@ -5,12 +5,8 @@ project(hmi_message_publisher)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(../hmi_message/include)
-
-#find_package(hmi_message REQUIRED)
-#include_directories(${hmi_message_INCLUDE_DIR})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -23,7 +19,6 @@ add_library(${PROJECT_NAME}
     ${SRCS}
 )
 
-
 target_link_libraries(${PROJECT_NAME}
   can_common
   hmi_message
@@ -32,7 +27,6 @@ target_link_libraries(${PROJECT_NAME}
   ${ROS_LIBRARIES}
   ${PROTOBUF_LIBRARIES}
 )
-
 
 #################### tool #######################
 create_tool(tools/ros_hmi_message_can_publisher bin/ros_hmi_message_can_publisher)
