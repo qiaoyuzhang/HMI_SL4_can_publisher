@@ -4,9 +4,16 @@
 namespace HMI{
 namespace SL4{
 namespace hmi_message_publisher{
+
+// CanNode::CanNode(const int index) {
+//     DLOG(INFO) << "CAN index: " << index;
+//     // node_();
+//     can_(index);
+//     init();
+// }
     
-CanNode::CanNode()
-    : node_(), can_(FLAGS_HMI_SL4_can_index) {
+CanNode::CanNode(const int index)
+    : can_(index) {
         init();
     }
 

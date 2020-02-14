@@ -9,4 +9,4 @@ DEFINE_string(HMI_SL4_steering_report_topic, "/vehicle/steering_report","");
 DEFINE_string(HMI_SL4_dbw_enable_topic, "/vehicle/dbw_enabled","");
 DEFINE_string(HMI_SL4_planning_trajectory_topic, "/planning/trajectory","");
 DEFINE_string(HMI_SL4_turn_signal_cmd_topic, "/vehicle/turn_signal_cmd","");
-DEFINE_int32(HMI_SL4_can_index, 0x100, "can index");
+DEFINE_int32(HMI_SL4_can_index, 0, "can index");
