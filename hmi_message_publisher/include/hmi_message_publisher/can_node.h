@@ -16,10 +16,11 @@ namespace hmi_message_publisher{
 class CanNode : public MessageHandler{
 
   public:
-    CanNode(); 
-    void init();
+    CanNode(const int index); 
     void Run();
   private:
+    void init();
+    
     ros::NodeHandle node_;
 
     ros::Subscriber lane_sub_;
