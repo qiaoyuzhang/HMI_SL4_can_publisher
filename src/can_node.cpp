@@ -5,12 +5,15 @@ namespace HMI{
 namespace SL4{
 namespace hmi_message_publisher{
 
-// CanNode::CanNode(const int index) {
-//     DLOG(INFO) << "CAN index: " << index;
-//     // node_();
-//     can_(index);
-//     init();
-// }
+bool CanNode::use_threat_obstacle_topic(true);
+std::string CanNode::perception_obstacle_topic("");
+std::string CanNode::threat_obstacle_topic("");
+std::string CanNode::lane_path_topic("");
+std::string CanNode::odom_topic("");
+std::string CanNode::steering_report_topic("");
+std::string CanNode::dbw_enable_topic("");
+std::string CanNode::planning_trajectory_topic("");
+std::string CanNode::turn_signal_cmd_topic("");
     
 CanNode::CanNode(const int index)
     : can_(index) {
@@ -22,40 +25,40 @@ void CanNode::init(){
     // set timer to write message to can every 0.1 s
     timer = node_.createTimer(ros::Duration(0.1), &CanNode::writeDataToCan, (CanNode*)this);
     
-    lane_sub_ = node_.subscribe(FLAGS_HMI_SL4_perception_obstacle_topic,
+    lane_sub_ = node_.subscribe(lane_path_topic,
                                 10,
                                 &MessageHandler::handleLanePath,
                                 (MessageHandler*)this);  // 10 hz
-    if (FLAGS_HMI_SL4_use_threat_obstacle_topic) {
-        obstacle_sub_ = node_.subscribe(FLAGS_HMI_SL4_threat_obstacle_topic,
+    if (use_threat_obstacle_topic) {
+        obstacle_sub_ = node_.subscribe(threat_obstacle_topic,
                                         10,
                                         &MessageHandler::handleObstacles,
                                         (MessageHandler*)this);  // 10 hz
     } else {
-        obstacle_sub_ = node_.subscribe(FLAGS_HMI_SL4_perception_obstacle_topic,
+        obstacle_sub_ = node_.subscribe(perception_obstacle_topic,
                                         10,
                                         &MessageHandler::handleObstacles,
                                         (MessageHandler*)this);  // 10 hz
     }
 
-    odom_sub_ = node_.subscribe(FLAGS_HMI_SL4_odom_topic,
+    odom_sub_ = node_.subscribe(odom_topic,
                                 10,
                                 &MessageHandler::handleOdom,
                                 (MessageHandler*)this);  // 10 hz
 
-    steering_report_sub_ = node_.subscribe(FLAGS_HMI_SL4_steering_report_topic,
+    steering_report_sub_ = node_.subscribe(steering_report_topic,
                                            1,
                                            &MessageHandler::handleSteeringReport,
                                            (MessageHandler*)this);  // 100 hz
-    turn_signal_cmd_sub_ = node_.subscribe(FLAGS_HMI_SL4_turn_signal_cmd_topic,
+    turn_signal_cmd_sub_ = node_.subscribe(turn_signal_cmd_topic,
                                            10,
                                            &MessageHandler::handleTurnSignalCmd,
                                            (MessageHandler*)this);
-    dbw_enabled_sub_ = node_.subscribe(FLAGS_HMI_SL4_dbw_enable_topic,
+    dbw_enabled_sub_ = node_.subscribe(dbw_enable_topic,
                                        1,
                                        &MessageHandler::handleDbwEnabledUpdate,
                                        (MessageHandler*)this);  // ad hoc
-    planning_trajectory_sub_ = node_.subscribe(FLAGS_HMI_SL4_planning_trajectory_topic,
+    planning_trajectory_sub_ = node_.subscribe(planning_trajectory_topic,
                                                10,
                                                &MessageHandler::handlePlanningTrajectory,
                                                (MessageHandler*)this);  // 10 hz

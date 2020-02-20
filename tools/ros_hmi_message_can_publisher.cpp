@@ -6,16 +6,15 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "hmi_message_publisher_can_node");
     ros::NodeHandle nh("~");
 
-    auto use_threat_obstacle_topic = nh.param("use_threat_obstacle_topic", true);
-    auto perception_obstacle_topic = nh.param("perception_obstacle_topic", std::string{"/perception/obstacles"});
-    auto threat_obstacle_topic = nh.param("threat_obstacle_topic", std::string{"/threat_assessment/obstacles"});
-    auto lane_path_topic = nh.param("lane_path_topic", std::string{"/perception/lane_path"});
-    auto odom_topic = nh.param("odom_topic", std::string{"/navsat/odom"});
-    auto steering_report_topic = nh.param("steering_report_topic", std::string{"/vehicle/steering_report"});
-    auto dbw_enable_topic = nh.param("dbw_enable_topic", std::string{"/vehicle/dbw_enabled"});
-    auto planning_trajectory_topic = nh.param("planning_trajectory_topic", std::string{"/planning/trajectory"});
-    auto turn_signal_cmd_topic = nh.param("turn_signal_cmd_topic", std::string{"/vehicle/turn_signal_cmd"});
-    auto can_id = nh.param("ifname0", std::string{"can0"});
+    auto use_threat_obstacle_topic = nh.getParam("use_threat_obstacle_topic", CanNode::UseThreatObstacleTopic());
+    auto perception_obstacle_topic = nh.getParam("perception_obstacle_topic", CanNode::PerceptionObstacleTopic());
+    auto threat_obstacle_topic = nh.getParam("threat_obstacle_topic", CanNode::ThreatObstacleTopic());
+    auto lane_path_topic = nh.getParam("lane_path_topic", CanNode::LanePathTopic());
+    auto odom_topic = nh.getParam("odom_topic", CanNode::OdomTopic());
+    auto steering_report_topic = nh.getParam("steering_report_topic", CanNode::SteeringReportTopic());
+    auto dbw_enable_topic = nh.getParam("dbw_enable_topic", CanNode::DbwEnableTopic());
+    auto planning_trajectory_topic = nh.getParam("planning_trajectory_topic", CanNode::PlanningTrajectoryTopic());
+    auto turn_signal_cmd_topic = nh.getParam("turn_signal_cmd_topic", CanNode::TurnSignalCmdTopic());
 
     CanNode can_node(0);
     can_node.Run();

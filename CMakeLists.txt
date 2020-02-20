@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5.1)
 
-project(HMI_SL4_can_publisher)
+project(hmi_message_publisher)
 set(CMAKE_CXX_STANDARD 14)
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -69,35 +69,7 @@ message(STATUS "DRIVE INCLUDE: ${drive_INCLUDE_DIRS}")
 
 # default installed headers and libraries
 link_directories(${drive_LIBRARY_DIRS})
-
-# ros
-# if(DEFINED ENV{ROS_ROOT})
-#   get_filename_component(ROS_INSTALL_DIR $ENV{ROS_ROOT} DIRECTORY)
-#   get_filename_component(ROS_INSTALL_DIR ${ROS_INSTALL_DIR} DIRECTORY)
-#   if((NOT EXISTS ${ROS_INSTALL_DIR}) OR (NOT IS_DIRECTORY ${ROS_INSTALL_DIR}))
-#     message(FATAL_ERROR "ROS install directory ${ROS_INSTALL_DIR} doesn't exist (ROS_ROOT=$ENV{ROS_ROOT})")
-#   endif()
-# else()
-#   message(FATAL_ERROR "Environment variable ROS_ROOT not defined")
-# endif()
-# list(APPEND CMAKE_PREFIX_PATH "${ROS_INSTALL_DIR}")
-
-# include_directories(SYSTEM ${ROS_INSTALL_DIR}/include)
-# link_directories(${ROS_INSTALL_DIR}/lib)
-# set(ROS_LIBRARIES
-#     roscpp
-#     can_common
-#     cpp_common
-#     rosconsole
-#     rosconsole_bridge
-#     roscpp_serialization
-#     rostime
-#     rosbag
-#     rosbag_storage
-#     roscpp_serialization
-#     roslz4
-#     topic_tools
-#     message_filters)
+message(STATUS "DRIVE_LIBRARIES: ${drive_LIBRARY_DIRS}")
 
 # Opitonal build profiling
 option(BUILD_PROFILING "Enables build profile logging" OFF)
@@ -151,10 +123,6 @@ message(STATUS "PROTOBUF_PROTOC_EXECUTABLE: ${PROTOBUF_PROTOC_EXECUTABLE}")
 message(STATUS "PROTOBUF_PROTOC_LIBRARIES: ${PROTOBUF_PROTOC_LIBRARIES}")
 message(STATUS "PROTOBUF_PROTOC_LIBRARY: ${PROTOBUF_PROTOC_LIBRARY}")
 
-# GFlags
-# find_package(Gflags REQUIRED)
-# message(STATUS "GFLAGS_LIBRARIES: ${GFLAGS_LIBRARIES}")
-
 # GLog
 find_package(Glog REQUIRED)
 include_directories(SYSTEM ${GLOG_INCLUDE_DIRS})
@@ -164,7 +132,6 @@ message(STATUS "GLOG_LIBRARIES: ${GLOG_LIBRARIES}")
 find_package(GTest REQUIRED)
 include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
 message(STATUS "GTEST_LIBRARIES: ${GTEST_LIBRARIES}")
-project(hmi_message_publisher)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # include_directories(../hmi_message/include)
@@ -200,10 +167,24 @@ add_executable(${PROJECT_NAME}_node
 add_dependencies(${PROJECT_NAME}_lib ${catkin_EXPORTED_TARGETS})
 add_dependencies(${PROJECT_NAME}_node ${catkin_EXPORTED_TARGETS})
 
+target_link_libraries(${PROJECT_NAME}_lib
+  ${catkin_LIBRARIES}
+  ${GLOG_LIBRARIES}
+  ${PROTOBUF_LIBRARIES}
+  drive_common
+  drive_common_proto
+)
+
 target_link_libraries(${PROJECT_NAME}_node
   ${PROJECT_NAME}_lib
   ${catkin_LIBRARIES}
+  ${GLOG_LIBRARIES}
+  ${PROTOBUF_LIBRARIES}
+  drive_common
+  drive_common_proto
 )
+
+# target_link_directories(${PROJECT_NAME}_node ${drive_LIBRARY_DIRS})
 
 #################### tool #######################
 # create_tool(tools/ros_hmi_message_can_publisher bin/ros_hmi_message_can_publisher)
