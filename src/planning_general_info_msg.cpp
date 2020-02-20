@@ -1,5 +1,5 @@
-#include "hmi_message/planning_general_info_msg.h"
-#include "hmi_message/utils.h"
+#include "hmi_message_publisher/planning_general_info_msg.h"
+#include "hmi_message_publisher/utils.h"
 #include <glog/logging.h>
 
 namespace HMI {

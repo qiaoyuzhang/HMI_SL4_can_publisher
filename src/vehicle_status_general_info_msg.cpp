@@ -1,5 +1,5 @@
-#include "hmi_message/vehicle_status_general_info_msg.h"
-#include "hmi_message/utils.h"
+#include "hmi_message_publisher/vehicle_status_general_info_msg.h"
+#include "hmi_message_publisher/utils.h"
 #include <math.h>
 #include <glog/logging.h>
 
