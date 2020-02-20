@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="ifname0" default="can0" doc="CAN interface to the HMI" />
+    <arg name="use_threat_obstacle_topic" default="true" doc="" />
+    <arg name="perception_obstacle_topic" default="/perception/obstacles" doc="" />
+    <arg name="threat_obstacle_topic" default="/threat_assessment/obstacles" doc="" />
+    <arg name="lane_path_topic" default="/perception/lane_path" doc="" />
+    <arg name="odom_topic" default="/navsat/odom" doc="" />
+    <arg name="steering_report_topic" default="/vehicle/steering_report" doc="" />
+    <arg name="dbw_enable_topic" default="/vehicle/dbw_enabled" doc="" />
+    <arg name="planning_trajectory_topic" default="/planning/trajectory" doc="" />
+    <arg name="turn_signal_cmd_topic" default="/vehicle/turn_signal_cmd" doc="" />
+
+    <node pkg="hmi_message_publisher" name="hmi_message_publisher_node" type="hmi_message_publisher_node" output="screen" required="true">
+        <param name="~/ifname0" value="$(arg ifname0)"/>
+        <param name="~/use_threat_obstacle_topic" value="$(arg use_threat_obstacle_topic)"/>
+        <param name="~/perception_obstacle_topic" value="$(arg perception_obstacle_topic)"/>
+        <param name="~/threat_obstacle_topic" value="$(arg threat_obstacle_topic)"/>
+        <param name="~/lane_path_topic" value="$(arg lane_path_topic)"/>
+        <param name="~/odom_topic" value="$(arg odom_topic)"/>
+        <param name="~/steering_report_topic" value="$(arg steering_report_topic)"/>
+        <param name="~/dbw_enable_topic" value="$(arg dbw_enable_topic)"/>
+        <param name="~/planning_trajectory_topic" value="$(arg planning_trajectory_topic)"/>
+        <param name="~/turn_signal_cmd_topic" value="$(arg turn_signal_cmd_topic)"/>
+    </node>
+</launch>
