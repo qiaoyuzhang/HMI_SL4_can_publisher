@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.5.1)
 
 project(HMI_SL4_can_publisher)
-set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # plusai cmake module path
 set(PLUSAI_CMAKE_MODULE_PATH "/opt/plusai/var/cmake/Modules" CACHE PATH "")
@@ -70,33 +71,33 @@ message(STATUS "DRIVE INCLUDE: ${drive_INCLUDE_DIRS}")
 link_directories(${drive_LIBRARY_DIRS})
 
 # ros
-if(DEFINED ENV{ROS_ROOT})
-  get_filename_component(ROS_INSTALL_DIR $ENV{ROS_ROOT} DIRECTORY)
-  get_filename_component(ROS_INSTALL_DIR ${ROS_INSTALL_DIR} DIRECTORY)
-  if((NOT EXISTS ${ROS_INSTALL_DIR}) OR (NOT IS_DIRECTORY ${ROS_INSTALL_DIR}))
-    message(FATAL_ERROR "ROS install directory ${ROS_INSTALL_DIR} doesn't exist (ROS_ROOT=$ENV{ROS_ROOT})")
-  endif()
-else()
-  message(FATAL_ERROR "Environment variable ROS_ROOT not defined")
-endif()
-list(APPEND CMAKE_PREFIX_PATH "${ROS_INSTALL_DIR}")
+# if(DEFINED ENV{ROS_ROOT})
+#   get_filename_component(ROS_INSTALL_DIR $ENV{ROS_ROOT} DIRECTORY)
+#   get_filename_component(ROS_INSTALL_DIR ${ROS_INSTALL_DIR} DIRECTORY)
+#   if((NOT EXISTS ${ROS_INSTALL_DIR}) OR (NOT IS_DIRECTORY ${ROS_INSTALL_DIR}))
+#     message(FATAL_ERROR "ROS install directory ${ROS_INSTALL_DIR} doesn't exist (ROS_ROOT=$ENV{ROS_ROOT})")
+#   endif()
+# else()
+#   message(FATAL_ERROR "Environment variable ROS_ROOT not defined")
+# endif()
+# list(APPEND CMAKE_PREFIX_PATH "${ROS_INSTALL_DIR}")
 
-include_directories(SYSTEM ${ROS_INSTALL_DIR}/include)
-link_directories(${ROS_INSTALL_DIR}/lib)
-set(ROS_LIBRARIES
-    roscpp
-    can_common
-    cpp_common
-    rosconsole
-    rosconsole_bridge
-    roscpp_serialization
-    rostime
-    rosbag
-    rosbag_storage
-    roscpp_serialization
-    roslz4
-    topic_tools
-    message_filters)
+# include_directories(SYSTEM ${ROS_INSTALL_DIR}/include)
+# link_directories(${ROS_INSTALL_DIR}/lib)
+# set(ROS_LIBRARIES
+#     roscpp
+#     can_common
+#     cpp_common
+#     rosconsole
+#     rosconsole_bridge
+#     roscpp_serialization
+#     rostime
+#     rosbag
+#     rosbag_storage
+#     roscpp_serialization
+#     roslz4
+#     topic_tools
+#     message_filters)
 
 # Opitonal build profiling
 option(BUILD_PROFILING "Enables build profile logging" OFF)
@@ -151,8 +152,8 @@ message(STATUS "PROTOBUF_PROTOC_LIBRARIES: ${PROTOBUF_PROTOC_LIBRARIES}")
 message(STATUS "PROTOBUF_PROTOC_LIBRARY: ${PROTOBUF_PROTOC_LIBRARY}")
 
 # GFlags
-find_package(Gflags REQUIRED)
-message(STATUS "GFLAGS_LIBRARIES: ${GFLAGS_LIBRARIES}")
+# find_package(Gflags REQUIRED)
+# message(STATUS "GFLAGS_LIBRARIES: ${GFLAGS_LIBRARIES}")
 
 # GLog
 find_package(Glog REQUIRED)
@@ -163,20 +164,61 @@ message(STATUS "GLOG_LIBRARIES: ${GLOG_LIBRARIES}")
 find_package(GTest REQUIRED)
 include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
 message(STATUS "GTEST_LIBRARIES: ${GTEST_LIBRARIES}")
+project(hmi_message_publisher)
 
-#################### TESTS
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+# include_directories(../hmi_message/include)
 
-add_custom_target(check
-    COMMAND ${CMAKE_CTEST_COMMAND})
-enable_testing()
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  std_msgs
+  can_common
+)
 
-#################### COMMON/SHARED DIRECTORIES
+catkin_package(
+  CATKIN_DEPENDS
+  roscpp
+  std_msgs
+  can_common
+)
 
-#################### LOG SETUP VARS
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+)
 
-#################### ADD SUBPROJECT DRECTORIES
+file(GLOB SOURCES "src/*.cpp")
 
-add_subdirectory(hmi_message)
-add_subdirectory(hmi_message_publisher)
+add_library(${PROJECT_NAME}_lib
+  ${SOURCES}
+)
 
-#################### Gen CMake Configuration File
+add_executable(${PROJECT_NAME}_node
+  tools/ros_hmi_message_can_publisher.cpp
+)
+
+add_dependencies(${PROJECT_NAME}_lib ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME}_node ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(${PROJECT_NAME}_node
+  ${PROJECT_NAME}_lib
+  ${catkin_LIBRARIES}
+)
+
+#################### tool #######################
+# create_tool(tools/ros_hmi_message_can_publisher bin/ros_hmi_message_can_publisher)
+
+#################### install ####################
+install(TARGETS ${PROJECT_NAME}_lib ${PROJECT_NAME}_node
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+#################### test #######################
+# if (CATKIN_ENABLE_TESTING)
+#   add_subdirectory(tests)
+# endif()

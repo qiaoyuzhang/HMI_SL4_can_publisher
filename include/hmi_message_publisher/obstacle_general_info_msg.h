@@ -1,5 +1,5 @@
 #include "common/obstacle_detection.pb.h"
-#include "hmi_message/const_vars.h"
+#include "hmi_message_publisher/const_vars.h"
 #include <vector>
 
 namespace HMI {

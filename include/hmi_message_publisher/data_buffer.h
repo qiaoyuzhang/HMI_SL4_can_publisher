@@ -1,9 +1,9 @@
 #pragma once
 #include "math/pose.h"
-#include "hmi_message/vehicle_status_general_info_msg.h"
-#include "hmi_message/obstacle_general_info_msg.h"
-#include "hmi_message/lane_general_info_msg.h"
-#include "hmi_message/planning_general_info_msg.h"
+#include "hmi_message_publisher/vehicle_status_general_info_msg.h"
+#include "hmi_message_publisher/obstacle_general_info_msg.h"
+#include "hmi_message_publisher/lane_general_info_msg.h"
+#include "hmi_message_publisher/planning_general_info_msg.h"
 #include <vector>
 #include <std_msgs/String.h>
 #include <dbw_mkz_msgs/SteeringReport.h>
