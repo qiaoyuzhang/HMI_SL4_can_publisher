@@ -139,6 +139,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  plusai_msgs
   can_common
 )
 
@@ -146,6 +147,7 @@ catkin_package(
   CATKIN_DEPENDS
   roscpp
   std_msgs
+  plusai_msgs
   can_common
 )
 

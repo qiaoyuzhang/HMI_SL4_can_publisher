@@ -10,6 +10,7 @@
 #include <std_msgs/Bool.h>
 #include <dbw_mkz_msgs/TurnSignalCmd.h>
 #include <nav_msgs/Odometry.h>
+#include <plusai_msgs/LongitudinalControlReport.h>
 
 namespace HMI{
 namespace SL4{

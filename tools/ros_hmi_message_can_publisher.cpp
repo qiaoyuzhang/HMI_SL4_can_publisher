@@ -15,6 +15,7 @@ int main(int argc, char** argv)
     auto dbw_enable_topic = nh.getParam("dbw_enable_topic", CanNode::DbwEnableTopic());
     auto planning_trajectory_topic = nh.getParam("planning_trajectory_topic", CanNode::PlanningTrajectoryTopic());
     auto turn_signal_cmd_topic = nh.getParam("turn_signal_cmd_topic", CanNode::TurnSignalCmdTopic());
+    auto longitudinal_report_topic = nh.getParam("longitudinal_report_topic", CanNode::LongitudinalReportTopic());
 
     CanNode can_node(0);
     can_node.Run();
