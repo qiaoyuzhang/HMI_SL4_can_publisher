@@ -14,6 +14,7 @@ std::string CanNode::steering_report_topic("");
 std::string CanNode::dbw_enable_topic("");
 std::string CanNode::planning_trajectory_topic("");
 std::string CanNode::turn_signal_cmd_topic("");
+std::string CanNode::longitudinal_report_topic("");
     
 CanNode::CanNode(const int index)
     : can_(index) {
@@ -62,6 +63,10 @@ void CanNode::init(){
                                                10,
                                                &MessageHandler::handlePlanningTrajectory,
                                                (MessageHandler*)this);  // 10 hz
+    longitudinal_report_sub_ = node_.subscribe(longitudinal_report_topic,
+                                               1,
+                                               &MessageHandler::handleLongitudinalReport,
+                                               (MessageHandler*)this);
 }
     
 void CanNode::Run(){

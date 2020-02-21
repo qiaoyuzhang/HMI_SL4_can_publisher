@@ -45,6 +45,7 @@ namespace hmi_message{
     
     void VehicleStatusGeneralInfo::setEngageStatus(const VehicleEngageStatus& engage_status){
         unsigned int data = VehicleStatusGeneralInfo_engage_status.getData(engage_status);
+        DLOG(INFO) << "Engaged status: " << data;
         writeDataToDataVector(_data_vec, VehicleStatusGeneralInfo_engage_status.data_start, VehicleStatusGeneralInfo_engage_status.len, data);
     }
 

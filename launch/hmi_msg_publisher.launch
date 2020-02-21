@@ -10,6 +10,7 @@
     <arg name="dbw_enable_topic" default="/vehicle/dbw_enabled" doc="" />
     <arg name="planning_trajectory_topic" default="/planning/trajectory" doc="" />
     <arg name="turn_signal_cmd_topic" default="/vehicle/turn_signal_cmd" doc="" />
+    <arg name="longitudinal_report_topic" default="/control/longitudinal_debug_report" doc="" />
 
     <node pkg="hmi_message_publisher" name="hmi_message_publisher_node" type="hmi_message_publisher_node" output="screen" required="true">
         <param name="~/ifname0" value="$(arg ifname0)"/>
@@ -22,5 +23,6 @@
         <param name="~/dbw_enable_topic" value="$(arg dbw_enable_topic)"/>
         <param name="~/planning_trajectory_topic" value="$(arg planning_trajectory_topic)"/>
         <param name="~/turn_signal_cmd_topic" value="$(arg turn_signal_cmd_topic)"/>
+        <param name="~/longitudinal_report_topic" value="$(arg longitudinal_report_topic)" />
     </node>
 </launch>

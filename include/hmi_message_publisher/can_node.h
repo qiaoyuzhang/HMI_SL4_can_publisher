@@ -26,6 +26,8 @@ class CanNode : public MessageHandler{
     static std::string &DbwEnableTopic() {return dbw_enable_topic;};
     static std::string &PlanningTrajectoryTopic() {return planning_trajectory_topic;};
     static std::string &TurnSignalCmdTopic() {return turn_signal_cmd_topic;};
+    static std::string &LongitudinalReportTopic() {return longitudinal_report_topic;};
+
   private:
     void init();
     
@@ -38,6 +40,7 @@ class CanNode : public MessageHandler{
     ros::Subscriber turn_signal_cmd_sub_;
     ros::Subscriber dbw_enabled_sub_;
     ros::Subscriber planning_trajectory_sub_;
+    ros::Subscriber longitudinal_report_sub_;
 
     void writeDataToCan(const ros::TimerEvent&);
     drive::common::CanInterface can_;
@@ -52,6 +55,7 @@ class CanNode : public MessageHandler{
     static std::string dbw_enable_topic;
     static std::string planning_trajectory_topic;
     static std::string turn_signal_cmd_topic;
+    static std::string longitudinal_report_topic;
 };
 }
 }

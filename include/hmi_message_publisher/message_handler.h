@@ -18,6 +18,7 @@ class MessageHandler{
     void handlePlanningTrajectory(const std_msgs::String::ConstPtr& msg);
     void handleCheckStatus(const std_msgs::String::ConstPtr& msg);
     void handleOdom(const nav_msgs::Odometry::ConstPtr& msg);
+    void handleLongitudinalReport(const plusai_msgs::LongitudinalControlReport& msg);
   
   private:
     void ConvertWorld2IMU(const drive::common::math::Pose& pose, std::vector<double>& imu_point, const double& world_x, const double& would_y, const double& wold_z);

@@ -19,17 +19,19 @@ static const google::protobuf::EnumDescriptor *TrajectoryType_descriptor = drive
 class PlanningGeneralInfo {
     public:
         PlanningGeneralInfo();
-        PlanningGeneralInfo(const bool& allow_lane_change, const bool& left_lane_change_cmd, const bool& right_lane_change_cmd, const double& speed_limit);
+        PlanningGeneralInfo(const bool& allow_lane_change, const bool& left_lane_change_cmd, const bool& right_lane_change_cmd, const double& set_speed, const double& speed_limit);
         PlanningGeneralInfo(const VectorDataType& data_vector);   
        
         void setAllowLaneChange(const bool& allow_lane_change);
         void setLeftLaneChangeCmd(const bool& left_lane_change_cmd);
         void setRightLaneChangeCmd(const bool& right_lane_change_cmd);
+        void setSetSpeed(const double& set_speed);
         void setSpeedLimit(const double& speed_limit);
         
         bool getAllowLaneChange();
         bool getLeftLaneChangeCmd();
         bool getRightLaneChangeCmd();
+        double getSetSpeed();
         double getSpeedLimit();
         
         VectorDataType getVectorData() const { return _data_vec; }
