@@ -15,10 +15,10 @@ namespace hmi_message_publisher{
     MessageHandler::MessageHandler(){}
     
     void MessageHandler::handleSteeringReport(const dbw_mkz_msgs::SteeringReport::ConstPtr& msg){
-        // DLOG(INFO) << "handleSteeringReport";
-        // DLOG(INFO) << "speed: " << msg->speed << " steering_angle: " << msg->steering_wheel_angle;    
+        DLOG(INFO) << "handleSteeringReport";
+        DLOG(INFO) << "speed: " << msg->speed << " steering_angle: " << msg->steering_wheel_angle;    
         _data_buffer.vehicle_status_general_info.setSpeed(msg->speed);
-        _data_buffer.vehicle_status_general_info.setSteeringAngle(msg->steering_wheel_angle);
+        _data_buffer.vehicle_status_general_info.setSteeringAngle(msg->steering_wheel_angle * 57.296);
 
     }
 
