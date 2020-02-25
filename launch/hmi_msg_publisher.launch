@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="ifname0" default="can0" doc="CAN interface to the HMI" />
-    <arg name="use_threat_obstacle_topic" default="true" doc="" />
+    <arg name="use_threat_obstacle_topic" default="false" doc="" />
     <arg name="perception_obstacle_topic" default="/perception/obstacles" doc="" />
     <arg name="threat_obstacle_topic" default="/threat_assessment/obstacles" doc="" />
     <arg name="lane_path_topic" default="/perception/lane_path" doc="" />

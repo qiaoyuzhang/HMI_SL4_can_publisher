@@ -95,12 +95,10 @@ struct DataConfigBool{
     }
 };
 
-
 //  get the minimum number of byte to storage the n bits
 static unsigned int n_byte(const unsigned int n_bit){
     return ((n_bit%8) == 0 )? n_bit/8 :  (n_bit/8) + 1;
 };
-
 
 // VehicleStatus
 static const DataConfigInt VehicleStatusGeneralInfo_speed(0,10,-256,1);
@@ -111,7 +109,6 @@ static const unsigned int VehicleStatusGeneralInfo_data_total_bit = 23; //sum of
 static const unsigned int VehicleStatusGeneralInfo_data_size = n_byte(VehicleStatusGeneralInfo_data_total_bit);
 
 //Obstacle
-
 static const DataConfigInt ObstacleGeneralInfo_ob_id(0,12,0,1);
 static const DataConfigDouble ObstacleGeneralInfo_dist_long(12,12,-2048,1);
 static const DataConfigDouble ObstacleGeneralInfo_dist_lat(24,12,-200,0.5);
@@ -122,16 +119,13 @@ static const unsigned int ObstacleGeneralInfo_data_total_bit = 42; //sum of all 
 static const unsigned int ObstacleGeneralInfo_data_size = n_byte(ObstacleGeneralInfo_data_total_bit);
 
 //Lane
-
 static const DataConfigBool LaneGeneralInfo_left_lane_exist(0);
 static const DataConfigBool LaneGeneralInfo_right_lane_exist(1);
 
 static const unsigned int LaneGeneralInfo_data_total_bit = 2; //sum of all lens in the message
 static const unsigned int LaneGeneralInfo_data_size = n_byte(LaneGeneralInfo_data_total_bit);
 
-
 //Planning
-
 static const DataConfigBool PlanningGeneralInfo_allow_lane_change(0);
 static const DataConfigBool PlanningGeneralInfo_left_lane_change_cmd(1);
 static const DataConfigBool PlanningGeneralInfo_right_lane_change_cmd(2);
