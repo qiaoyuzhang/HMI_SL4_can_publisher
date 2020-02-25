@@ -27,6 +27,8 @@ namespace hmi_message_publisher{
         DLOG(INFO) << "dbw_enable: " << msg->data;
         if (msg->data){
              _data_buffer.vehicle_status_general_info.setEngageStatus(hmi_message::VehicleEngageStatus::ENGAGED);
+        } else {
+            _data_buffer.vehicle_status_general_info.setEngageStatus(hmi_message::VehicleEngageStatus::READY);
         }
     }
 
