@@ -144,14 +144,15 @@ namespace hmi_message_publisher{
 
     void MessageHandler::handleObstacles(const std_msgs::String::ConstPtr& msg){
         DLOG(INFO) << "handleObstacles";
-        auto& obstacle_general_info_vec = _data_buffer.obstacle_general_info_vec;
-        obstacle_general_info_vec.clear();
+        auto& obstacle_extended_info_vec = _data_buffer.obstacle_extenged_info_vec;
+        obstacle_extended_info_vec.clear();
         ObstacleDetection obstacle_detection;
         if (!obstacle_detection.ParseFromString(msg->data)) {
             DLOG(ERROR) << "failed to parse obstacles message";
             return;
         }
         DLOG(INFO) << "obstacle size: " << obstacle_detection.obstacle().size();
+        _data_buffer.obstacle_general_info.setObstacleCount(obstacle_detection.obstacle().size());
         for(const auto& obstacle : obstacle_detection.obstacle()){
             std::vector<double> imu_point;
             ConvertWorld2IMU(_data_buffer.pose, imu_point, obstacle.motion().x(), obstacle.motion().y(), obstacle.motion().z());                      
@@ -163,8 +164,8 @@ namespace hmi_message_publisher{
                     is_threat = true;
                 }
             }
-            hmi_message::ObstacleGeneralInfo obstacle_general_info(obstacle.id(), imu_point[0], imu_point[1], obstacle.type(),is_threat); 
-            obstacle_general_info_vec.push_back(obstacle_general_info);
+            hmi_message::ObstacleExtendedInfo obstacle_extended_info(obstacle.id(), imu_point[0], imu_point[1], obstacle.type(),is_threat); 
+            obstacle_extended_info_vec.push_back(obstacle_extended_info);
         }
     }
 

@@ -7,6 +7,7 @@ namespace hmi_message{
 //  message ids
 static const unsigned int VehicleStatusGeneralInfoMsgId = 0x300;
 static const unsigned int ObstacleGeneralInfoMsgId = 0x400;
+static const unsigned int ObstacleExtendedInfoMsgId = 0x401;
 static const unsigned int LaneGeneralInfoMsgId = 0x500;
 static const unsigned int PlanningGeneralInfoMsgId = 0x600;
 
@@ -109,14 +110,19 @@ static const unsigned int VehicleStatusGeneralInfo_data_total_bit = 23; //sum of
 static const unsigned int VehicleStatusGeneralInfo_data_size = n_byte(VehicleStatusGeneralInfo_data_total_bit);
 
 //Obstacle
-static const DataConfigInt ObstacleGeneralInfo_ob_id(0,12,0,1);
-static const DataConfigDouble ObstacleGeneralInfo_dist_long(12,12,-2048,1);
-static const DataConfigDouble ObstacleGeneralInfo_dist_lat(24,12,-200,0.5);
-static const DataConfigInt ObstacleGeneralInfo_ob_class(36,5,0,1);
-static const DataConfigBool ObstacleGeneralInfo_ob_threat(41);
+static const DataConfigInt ObstacleGeneralInfo_ob_num(0,8,0,1);
 
-static const unsigned int ObstacleGeneralInfo_data_total_bit = 42; //sum of all lens in the message
+static const unsigned int ObstacleGeneralInfo_data_total_bit = 8;
 static const unsigned int ObstacleGeneralInfo_data_size = n_byte(ObstacleGeneralInfo_data_total_bit);
+
+static const DataConfigInt ObstacleExtendedInfo_ob_id(0,12,0,1);
+static const DataConfigDouble ObstacleExtendedInfo_dist_long(12,12,-2048,1);
+static const DataConfigDouble ObstacleExtendedInfo_dist_lat(24,12,-200,0.5);
+static const DataConfigInt ObstacleExtendedInfo_ob_class(36,5,0,1);
+static const DataConfigBool ObstacleExtendedInfo_ob_threat(41);
+
+static const unsigned int ObstacleExtendedInfo_data_total_bit = 42; //sum of all lens in the message
+static const unsigned int ObstacleExtendedInfo_data_size = n_byte(ObstacleExtendedInfo_data_total_bit);
 
 //Lane
 static const DataConfigBool LaneGeneralInfo_left_lane_exist(0);
