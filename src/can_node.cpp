@@ -77,14 +77,15 @@ void CanNode::Run(){
 }
 
 void CanNode::writeDataToCan(const ros::TimerEvent& event){
-     DLOG(INFO) << "write data to Can";     
-      
-     can_.WriteToCan(hmi_message::VehicleStatusGeneralInfoMsgId, _data_buffer.vehicle_status_general_info.getVectorData());
-     for(const auto& obstacle : _data_buffer.obstacle_general_info_vec){
-        can_.WriteToCan(hmi_message::ObstacleGeneralInfoMsgId, obstacle.getVectorData());
-     }
-     can_.WriteToCan(hmi_message::LaneGeneralInfoMsgId, _data_buffer.lane_general_info.getVectorData());
-     can_.WriteToCan(hmi_message::PlanningGeneralInfoMsgId, _data_buffer.planning_general_info.getVectorData());
+    DLOG(INFO) << "write data to Can";     
+
+    can_.WriteToCan(hmi_message::VehicleStatusGeneralInfoMsgId, _data_buffer.vehicle_status_general_info.getVectorData());
+    can_.WriteToCan(hmi_message::ObstacleGeneralInfoMsgId, _data_buffer.obstacle_general_info.getVectorData());
+    for(const auto& obstacle : _data_buffer.obstacle_extenged_info_vec){
+        can_.WriteToCan(hmi_message::ObstacleExtendedInfoMsgId, obstacle.getVectorData());
+    }
+    can_.WriteToCan(hmi_message::LaneGeneralInfoMsgId, _data_buffer.lane_general_info.getVectorData());
+    can_.WriteToCan(hmi_message::PlanningGeneralInfoMsgId, _data_buffer.planning_general_info.getVectorData());
 }
 
 
