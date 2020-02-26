@@ -66,5 +66,25 @@ pipeline {
                 }
             }
         }
+        stage("Uploading packages") {
+            when {
+                branch 'master'
+            }
+            steps {
+                // Upload to our jenkins master so that we can kick a job that will
+                // put this in our debian repo for later usage/download/install/whatever.
+                script {
+                    def am_sent = uploadPackages("${env.WORKSPACE}", "${env.WORKSPACE}")
+                    if (am_sent == 0) {
+                        throw new RuntimeException("No packages were built (or sent)!")
+                    }
+                    else {
+                        // Kick this job to ensure that the packages get processed sooner than
+                        // it's periodic run...
+                        build(job: "packer", wait: false)
+                    }
+                }
+            }
+        }
     }
 }
