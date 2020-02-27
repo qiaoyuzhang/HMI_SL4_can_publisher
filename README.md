@@ -1,6 +1,6 @@
 # HMI_SL4_CAN_PUBLISHER
 
-Goal:
+## Goal:
 
 1. Convert HMI-SL4 messages to CAN messages
 
@@ -8,15 +8,25 @@ Goal:
 
 3. Create a ros node listen the necessary ros topics and write to can
 
-Compile:
-```
-    $cd HMI_SL4_can_publisher/
-    $make
+## Compile:
+
+```bash
+    $ ln -s $HOME/catkin_ws/src/hmi_can_publisher ../hmi_can_publisher
+    $ cd $HOME/catkin_ws
+    $ catkin_make install
 ```    
 
 CAN Message Definition was in `hmi_message/const_vars.h`
 
-Example usage:
+
+## Install
+
+This repo creates debian package `ros-kinetic-hmi-message-publisher`. To install this package, do
+```bash
+    $ sudo apt-get install ros-kinetic-hmi-message-publisher
+```
+
+## Example usage:
     
 1. write hmi message and generate CAN message
 
@@ -32,7 +42,7 @@ Example usage:
 
 More example is in  `hmi_message/test`
 
-3. ros node: 
+3. roslaunch: 
 ```
-    $./build/debug/hmi_message_publisher/ros_hmi_message_can_publisher --HMI_SL4_can_index 0x100
+    $ roslaunch hmi_message_publisher hmi_message_publisher.launch
 ```
