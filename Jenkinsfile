@@ -14,6 +14,10 @@ pipeline {
         stage("Jenkins environment injection") {
             steps {
                 populateEnv()
+                script {
+                    // We don't want the basebasedev one, instead we want the last drive one that worked.
+                    env.BASE_IMAGE = "${env.DOCKER_REPO_HOST_SHORT}:${env.DOCKER_REPO_HOST_PORT}/plusai/drive:latest"
+                }
             }
         }
         stage("Cleanup") {
@@ -28,11 +32,13 @@ pipeline {
             steps {
                 // See: https://jenkins.io/doc/pipeline/steps/workflow-scm-step/
                 script {
-                    def scm_vars = checkout scm
-                    printMap(scm_vars, "My scm vars are:")
-                    printMap(env.getEnvironment(), "My environment is:")
-                    env.GIT_COMMIT = scm_vars.GIT_COMMIT
-                    env.GIT_BRANCH = scm_vars.GIT_BRANCH
+                    dir("code") {
+                        def scm_vars = checkout scm
+                        printMap(scm_vars, "My scm vars are:")
+                        printMap(env.getEnvironment(), "My environment is:")
+                        env.GIT_COMMIT = scm_vars.GIT_COMMIT
+                        env.GIT_BRANCH = scm_vars.GIT_BRANCH
+                    }
                 }
                 milestone(ordinal: 0, label: "CHECKOUT_FINISH_MILESTONE")
             }
@@ -58,8 +64,8 @@ pipeline {
                             # Get a newer rosdep, the ubuntu one seems busted...
                             virtualenv --system-site-packages .venv
                             . .venv/bin/activate
-                            pip install rosdep -I
-                            # ./package.sh
+                            cp code/package.sh .
+                            ./package.sh
                             """
                         }
                     }
