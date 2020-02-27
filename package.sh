@@ -31,7 +31,7 @@ sudo cp plusai_hmi_can_publisher.list /etc/ros/rosdep/sources.list.d/00-plusai_h
 
 rosdep update
 
-# cd code
+cd code
 
 old_ver="0.1.0"
 new_ver="0.1.$build_num"
