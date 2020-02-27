@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "hmi_message/utils.h"
+#include "hmi_message_publisher/utils.h"
 
 using namespace HMI::SL4::hmi_message;
 
@@ -78,4 +78,9 @@ TEST(Utils, convert_data) {
     getDataFromDataVector(data_vector, 37, 15, rec_data);
     ASSERT_EQ(rec_data, data);   
     
+}
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

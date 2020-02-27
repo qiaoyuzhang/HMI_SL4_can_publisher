@@ -1,22 +1,41 @@
 #include "hmi_message_publisher/can_node.h"
+#include "base/program.h"
+#include "plusmap/plusmap_utils.h"
+#include "hmi_message_publisher/flags.h"
 #include <glog/logging.h>
 using namespace HMI::SL4::hmi_message_publisher;
+using namespace drive::common::base;
+
+static const std::string node_name = "hmi_message_can_publisher_node";
+class HmiMessagePublisherProgram: public ROSProgram {
+ public:
+    HmiMessagePublisherProgram() : ROSProgram(node_name){};
+
+    bool init() override {
+
+        CanNode::UseThreatObstacleTopic() = FLAGS_use_threat_obstacle_topic;
+        CanNode::PerceptionObstacleTopic() = FLAGS_perception_obstacle_topic;
+        CanNode::ThreatObstacleTopic() = FLAGS_threat_obstacle_topic;
+        CanNode::LanePathTopic() = FLAGS_lane_path_topic;
+        CanNode::OdomTopic() = FLAGS_odom_topic;
+        CanNode::SteeringReportTopic() = FLAGS_steering_report_topic;
+        CanNode::DbwEnableTopic() = FLAGS_dbw_enable_topic;
+        CanNode::PlanningTrajectoryTopic() = FLAGS_planning_trajectory_topic;
+        CanNode::TurnSignalCmdTopic() = FLAGS_turn_signal_cmd_topic;
+        CanNode::LongitudinalReportTopic() = FLAGS_longitudinal_report_topic;
+
+        return true;
+    }
+
+    void go() override {
+
+        CanNode can_node(0);
+        can_node.Run();
+    }
+};
+
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "hmi_message_publisher_can_node");
-    ros::NodeHandle nh("~");
-
-    auto use_threat_obstacle_topic = nh.getParam("use_threat_obstacle_topic", CanNode::UseThreatObstacleTopic());
-    auto perception_obstacle_topic = nh.getParam("perception_obstacle_topic", CanNode::PerceptionObstacleTopic());
-    auto threat_obstacle_topic = nh.getParam("threat_obstacle_topic", CanNode::ThreatObstacleTopic());
-    auto lane_path_topic = nh.getParam("lane_path_topic", CanNode::LanePathTopic());
-    auto odom_topic = nh.getParam("odom_topic", CanNode::OdomTopic());
-    auto steering_report_topic = nh.getParam("steering_report_topic", CanNode::SteeringReportTopic());
-    auto dbw_enable_topic = nh.getParam("dbw_enable_topic", CanNode::DbwEnableTopic());
-    auto planning_trajectory_topic = nh.getParam("planning_trajectory_topic", CanNode::PlanningTrajectoryTopic());
-    auto turn_signal_cmd_topic = nh.getParam("turn_signal_cmd_topic", CanNode::TurnSignalCmdTopic());
-    auto longitudinal_report_topic = nh.getParam("longitudinal_report_topic", CanNode::LongitudinalReportTopic());
-
-    CanNode can_node(0);
-    can_node.Run();
+    HmiMessagePublisherProgram p;
+    return p.run(argc, argv);
 }

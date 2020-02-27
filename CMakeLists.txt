@@ -32,6 +32,21 @@ if(NOT DEFINED DRIVE_ROOT)
 endif()
 message(STATUS "DRIVE_ROOT: ${DRIVE_ROOT}")
 
+# precompiled thirdparty libaries
+set(EXTERNAL_LIB_DIR "/opt/plusai/external/opt")
+if(DEFINED ENV{EXTERNAL_LIB_DIR})
+        set(EXTERNAL_LIB_DIR "$ENV{EXTERNAL_LIB_DIR}")
+        endif()
+        if(NOT (EXISTS "${EXTERNAL_LIB_DIR}" AND IS_DIRECTORY "${EXTERNAL_LIB_DIR}"))
+              message(FATAL_ERROR "Unable to locate external lib directory")
+              endif()
+              message(STATUS "EXTERNAL_LIB_DIR: ${EXTERNAL_LIB_DIR}")
+# add external lib to include and link path
+              include_directories(${EXTERNAL_LIB_DIR}/include)
+              link_directories(${EXTERNAL_LIB_DIR}/lib)
+# add external lib to CMAKE_PREFIX_PATH
+              list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIB_DIR})
+
 # Global flag to cause add_library to create shared libraries if ON.
 set(BUILD_SHARED_LIBS ON)
 
@@ -65,6 +80,9 @@ include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${drive_INCLUDE_DIRS}/common)
 include_directories(${drive_INCLUDE_DIRS}/proto)
+include_directories(${drive_INCLUDE_DIRS})
+include_directories(${drive_INCLUDE_DIRS}/plusmap)
+
 message(STATUS "DRIVE INCLUDE: ${drive_INCLUDE_DIRS}")
 
 # default installed headers and libraries
@@ -123,6 +141,10 @@ message(STATUS "PROTOBUF_PROTOC_EXECUTABLE: ${PROTOBUF_PROTOC_EXECUTABLE}")
 message(STATUS "PROTOBUF_PROTOC_LIBRARIES: ${PROTOBUF_PROTOC_LIBRARIES}")
 message(STATUS "PROTOBUF_PROTOC_LIBRARY: ${PROTOBUF_PROTOC_LIBRARY}")
 
+# GFlags
+find_package(Gflags REQUIRED)
+message(STATUS "GFLAGS_LIBRARIES: ${GFLAGS_LIBRARIES}")
+
 # GLog
 find_package(Glog REQUIRED)
 include_directories(SYSTEM ${GLOG_INCLUDE_DIRS})
@@ -132,6 +154,12 @@ message(STATUS "GLOG_LIBRARIES: ${GLOG_LIBRARIES}")
 find_package(GTest REQUIRED)
 include_directories(SYSTEM ${GTEST_INCLUDE_DIRS})
 message(STATUS "GTEST_LIBRARIES: ${GTEST_LIBRARIES}")
+
+# jsoncpp
+find_package(JsonCpp REQUIRED)
+include_directories(${JsonCpp_INCLUDE_DIRS})
+message(STATUS "JsonCpp_INCLUDE_DIRS: ${JsonCpp_INCLUDE_DIRS}")
+message(STATUS "JsonCpp_LIBRARIES: ${JsonCpp_LIBRARIES}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # include_directories(../hmi_message/include)
@@ -172,18 +200,24 @@ add_dependencies(${PROJECT_NAME}_node ${catkin_EXPORTED_TARGETS})
 target_link_libraries(${PROJECT_NAME}_lib
   ${catkin_LIBRARIES}
   ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
   ${PROTOBUF_LIBRARIES}
+  ${JsonCpp_LIBRARIES}
   drive_common
   drive_common_proto
+  drive_plusmap
 )
 
 target_link_libraries(${PROJECT_NAME}_node
   ${PROJECT_NAME}_lib
   ${catkin_LIBRARIES}
   ${GLOG_LIBRARIES}
+  ${GFLAGS_LIBRARIES}
   ${PROTOBUF_LIBRARIES}
+  ${JsonCpp_LIBRARIES}
   drive_common
   drive_common_proto
+  drive_plusmap
 )
 
 # target_link_directories(${PROJECT_NAME}_node ${drive_LIBRARY_DIRS})
@@ -202,6 +236,18 @@ install(DIRECTORY launch
 )
 
 #################### test #######################
+if(CATKIN_ENABLE_TESTING)
+    catkin_add_gtest(lane_msg_test tests/test_lane_msg.cpp)
+    target_link_libraries(lane_msg_test ${PROJECT_NAME}_lib ${GTEST_LIBRARIES})
+    catkin_add_gtest(obstacle_msg_test tests/test_obstacle_msg.cpp)
+    target_link_libraries(obstacle_msg_test ${PROJECT_NAME}_lib ${GTEST_LIBRARIES})
+    catkin_add_gtest(planning_msg_test tests/test_planning_msg.cpp)
+    target_link_libraries(planning_msg_test ${PROJECT_NAME}_lib ${GTEST_LIBRARIES})
+    catkin_add_gtest(vehicle_status_msg_test tests/test_vehicle_status_msg.cpp)
+    target_link_libraries(vehicle_status_msg_test ${PROJECT_NAME}_lib ${GTEST_LIBRARIES})
+    catkin_add_gtest(util_test tests/test_utils.cpp)
+    target_link_libraries(util_test ${PROJECT_NAME}_lib ${GTEST_LIBRARIES})
+endif()
 # if (CATKIN_ENABLE_TESTING)
 #   add_subdirectory(tests)
 # endif()

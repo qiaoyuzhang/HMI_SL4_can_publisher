@@ -109,7 +109,7 @@ static const DataConfigInt VehicleStatusGeneralInfo_engage_status(21,2,0,1);
 static const unsigned int VehicleStatusGeneralInfo_data_total_bit = 23; //sum of all lens in the message
 static const unsigned int VehicleStatusGeneralInfo_data_size = n_byte(VehicleStatusGeneralInfo_data_total_bit);
 
-//Obstacle
+// Obstacle
 static const DataConfigInt ObstacleGeneralInfo_ob_num(0,8,0,1);
 
 static const unsigned int ObstacleGeneralInfo_data_total_bit = 8;
@@ -124,14 +124,14 @@ static const DataConfigBool ObstacleExtendedInfo_ob_threat(41);
 static const unsigned int ObstacleExtendedInfo_data_total_bit = 42; //sum of all lens in the message
 static const unsigned int ObstacleExtendedInfo_data_size = n_byte(ObstacleExtendedInfo_data_total_bit);
 
-//Lane
+// Lane
 static const DataConfigBool LaneGeneralInfo_left_lane_exist(0);
 static const DataConfigBool LaneGeneralInfo_right_lane_exist(1);
 
 static const unsigned int LaneGeneralInfo_data_total_bit = 2; //sum of all lens in the message
 static const unsigned int LaneGeneralInfo_data_size = n_byte(LaneGeneralInfo_data_total_bit);
 
-//Planning
+// Planning
 static const DataConfigBool PlanningGeneralInfo_allow_lane_change(0);
 static const DataConfigBool PlanningGeneralInfo_left_lane_change_cmd(1);
 static const DataConfigBool PlanningGeneralInfo_right_lane_change_cmd(2);

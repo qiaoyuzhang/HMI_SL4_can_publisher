@@ -15,6 +15,10 @@
     $ cd $HOME/catkin_ws
     $ catkin_make install
 ```    
+### Compile with test:
+```
+    $ catkin_make run_tests
+```
 
 CAN Message Definition was in `hmi_message/const_vars.h`
 
