@@ -88,11 +88,9 @@ namespace hmi_message_publisher{
         if (trajecotry_type == drive::common::planning::PlanningTrajectory::AEB){
             DLOG(INFO) << "Trajectory type: AEB";
             _data_buffer.active_AEB = true;
-            return;
         }
         else{
             _data_buffer.active_AEB = false;
-            return;
         }
 
         if(_data_buffer.planning_general_info.getLeftLaneChangeCmd()) {
@@ -104,7 +102,6 @@ namespace hmi_message_publisher{
                 DLOG(INFO) << "Trajectory type: not allow left lane change";
                 _data_buffer.planning_general_info.setAllowLaneChange(false);
             }
-            return;
         }
 
         if(_data_buffer.planning_general_info.getRightLaneChangeCmd()) {
@@ -116,7 +113,6 @@ namespace hmi_message_publisher{
                 DLOG(INFO) << "Trajectory type: not allow right lane change";
                 _data_buffer.planning_general_info.setAllowLaneChange(false);
             }
-            return;
         }
 
         // get speed limit from map
