@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "hmi_message/vehicle_status_general_info_msg.h"
+#include "hmi_message_publisher/vehicle_status_general_info_msg.h"
 
 using namespace HMI::SL4::hmi_message;
 
@@ -7,7 +7,6 @@ TEST(VehicleStatusGeneralInfo, initialization) {
     
     VehicleEngageStatus engage_status = NOT_READY;
     int speed_test = VehicleStatusGeneralInfo_speed.offset - VehicleStatusGeneralInfo_speed.resolution; 
-    LOG(INFO) << speed_test;
     VehicleStatusGeneralInfo vehicle_status1(speed_test, 100, engage_status);
     ASSERT_EQ(VehicleStatusGeneralInfo_speed.offset, vehicle_status1.getSpeed());
     ASSERT_EQ(100, vehicle_status1.getSteeringAngle());
@@ -50,4 +49,9 @@ TEST(VehicleStatusGeneralInfo, set_value) {
 
     vehicle_status.setEngageStatus(VehicleEngageStatus::ENGAGED);
     ASSERT_EQ(VehicleEngageStatus::ENGAGED, vehicle_status.getEngageStatus());
+}
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

@@ -11,18 +11,25 @@
     <arg name="planning_trajectory_topic" default="/planning/trajectory" doc="" />
     <arg name="turn_signal_cmd_topic" default="/vehicle/turn_signal_cmd" doc="" />
     <arg name="longitudinal_report_topic" default="/control/longitudinal_debug_report" doc="" />
-
+    <arg name="plusmap_file" default="$(optenv PLUSMAP_FILE /opt/plusai/external/opt/plusai/plusmap/proto/280_wolfe_sandhill_and_local/280_wolfe_sandhill_and_local.lane_geometry.pb)" />
+    <arg name="plusmap_annotation_file" default="$(optenv PLUSMAP_ANNOTATION_FILE /opt/plusai/external/opt/plusai/plusmap/proto/280_wolfe_sandhill_and_local/280_wolfe_sandhill_and_local.annotation.pb)" />
+    <arg name="plusmap_route_file" default="$(optenv PLUSMAP_ROUTE_FILE /opt/plusai/external/opt/plusai/plusmap/proto/280_wolfe_sandhill_and_local/280_wolfe_sandhill_and_local.plan_route.pb)" />
+    <arg name="projection_coordinate" default="$(optenv PROJECTION_COORDINATE eqdc)" />
     <node pkg="hmi_message_publisher" name="hmi_message_publisher_node" type="hmi_message_publisher_node" output="screen" required="true">
         <param name="~/ifname0" value="$(arg ifname0)"/>
-        <param name="~/use_threat_obstacle_topic" value="$(arg use_threat_obstacle_topic)"/>
-        <param name="~/perception_obstacle_topic" value="$(arg perception_obstacle_topic)"/>
-        <param name="~/threat_obstacle_topic" value="$(arg threat_obstacle_topic)"/>
-        <param name="~/lane_path_topic" value="$(arg lane_path_topic)"/>
-        <param name="~/odom_topic" value="$(arg odom_topic)"/>
-        <param name="~/steering_report_topic" value="$(arg steering_report_topic)"/>
-        <param name="~/dbw_enable_topic" value="$(arg dbw_enable_topic)"/>
-        <param name="~/planning_trajectory_topic" value="$(arg planning_trajectory_topic)"/>
-        <param name="~/turn_signal_cmd_topic" value="$(arg turn_signal_cmd_topic)"/>
-        <param name="~/longitudinal_report_topic" value="$(arg longitudinal_report_topic)" />
+        <param name="use_threat_obstacle_topic" value="$(arg use_threat_obstacle_topic)"/>
+        <param name="perception_obstacle_topic" value="$(arg perception_obstacle_topic)"/>
+        <param name="threat_obstacle_topic" value="$(arg threat_obstacle_topic)"/>
+        <param name="lane_path_topic" value="$(arg lane_path_topic)"/>
+        <param name="odom_topic" value="$(arg odom_topic)"/>
+        <param name="steering_report_topic" value="$(arg steering_report_topic)"/>
+        <param name="dbw_enable_topic" value="$(arg dbw_enable_topic)"/>
+        <param name="planning_trajectory_topic" value="$(arg planning_trajectory_topic)"/>
+        <param name="turn_signal_cmd_topic" value="$(arg turn_signal_cmd_topic)"/>
+        <param name="longitudinal_report_topic" value="$(arg longitudinal_report_topic)" />
+        <param name="plusmap_file" value="$(arg plusmap_file)" />
+        <param name="plusmap_annotation_file" value="$(arg plusmap_annotation_file)" />
+        <param name="plusmap_route_file" value="$(arg plusmap_route_file)" />
+        <param name="projection_coordinate" value="$(arg projection_coordinate)" />
     </node>
 </launch>

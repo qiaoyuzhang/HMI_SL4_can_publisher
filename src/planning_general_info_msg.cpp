@@ -7,6 +7,11 @@ namespace SL4 {
 namespace hmi_message{
     PlanningGeneralInfo::PlanningGeneralInfo(){
         _data_vec.resize(PlanningGeneralInfo_data_size);
+        setAllowLaneChange(false);
+        setLeftLaneChangeCmd(false);
+        setRightLaneChangeCmd(false);
+        setSetSpeed(0);
+        setSpeedLimit(0);
     }
     
     PlanningGeneralInfo::PlanningGeneralInfo(const bool& allow_lane_change, const bool& left_lane_change_cmd, const bool& right_lane_change_cmd, const double& set_speed, const double& speed_limit){ 

@@ -2,21 +2,24 @@
 #include "common/lane_detection.pb.h"
 #include "common/obstacle_detection.pb.h"
 #include "common/planning_trajectory.pb.h"
+#include "plusmap/plusmap_utils.h"
+#include "math/vec2d.h"
 #include <glog/logging.h>
 
 using namespace drive::common::perception;
 using namespace drive::common::planning;
 using namespace drive::common::math;
+using namespace drive::plusmap;
 
 namespace HMI{
 namespace SL4{
 namespace hmi_message_publisher{
-    
+
     MessageHandler::MessageHandler(){}
-    
+
     void MessageHandler::handleSteeringReport(const dbw_mkz_msgs::SteeringReport::ConstPtr& msg){
         DLOG(INFO) << "handleSteeringReport";
-        DLOG(INFO) << "speed: " << msg->speed * 2.237 << " steering_angle: " << msg->steering_wheel_angle;    
+        DLOG(INFO) << "speed: " << msg->speed * 2.237 << " steering_angle: " << msg->steering_wheel_angle;
         _data_buffer.vehicle_status_general_info.setSpeed(msg->speed * 2.237);
         _data_buffer.vehicle_status_general_info.setSteeringAngle(msg->steering_wheel_angle * 57.296);
 
@@ -48,7 +51,7 @@ namespace hmi_message_publisher{
             DLOG(INFO) << "READY";
             _data_buffer.vehicle_status_general_info.setEngageStatus(hmi_message::VehicleEngageStatus::READY);
         }
-    
+
     }
 
     void MessageHandler::handleTurnSignalCmd(const dbw_mkz_msgs::TurnSignalCmd::ConstPtr& msg){
@@ -58,9 +61,9 @@ namespace hmi_message_publisher{
         _data_buffer.planning_general_info.setLeftLaneChangeCmd(msg->cmd.value == dbw_mkz_msgs::TurnSignal::LEFT);
         _data_buffer.planning_general_info.setRightLaneChangeCmd(msg->cmd.value == dbw_mkz_msgs::TurnSignal::RIGHT);
     }
-    
+
     void MessageHandler::handleLanePath(const std_msgs::String::ConstPtr& msg){
-        DLOG(INFO) << "handleLanePath";       
+        DLOG(INFO) << "handleLanePath";
         LaneDetection lane_detection;
         if (!lane_detection.ParseFromString(msg->data)) {
             DLOG(ERROR) << "failed to parse lane detection message";
@@ -80,14 +83,6 @@ namespace hmi_message_publisher{
             LOG(ERROR) << "failed to parse planning trajectory message";
             return;
         }
-        DLOG(INFO) << "speed limit: " << planning_trajectory.speed_limit_used();
-        DLOG(INFO) << "cruise target speed: " << planning_trajectory.target_cruise_speed();
-        if (planning_trajectory.target_cruise_speed() < 0) {
-            _data_buffer.planning_general_info.setSpeedLimit(planning_trajectory.speed_limit_used() * 2.237);
-        } else {
-            _data_buffer.planning_general_info.setSpeedLimit(planning_trajectory.target_cruise_speed() * 2.237);
-        }
-        DLOG(INFO) << "published speed limit: " << _data_buffer.planning_general_info.getSpeedLimit() * 2.237;
 
         auto trajecotry_type = planning_trajectory.trajectory_type();
         if (trajecotry_type == drive::common::planning::PlanningTrajectory::AEB){
@@ -111,7 +106,7 @@ namespace hmi_message_publisher{
             }
             return;
         }
-        
+
         if(_data_buffer.planning_general_info.getRightLaneChangeCmd()) {
             if (trajecotry_type ==  drive::common::planning::PlanningTrajectory::LANE_CHANGE_RIGHT){
                 DLOG(INFO) << "Trajectory type: allow right lane change";
@@ -123,7 +118,20 @@ namespace hmi_message_publisher{
             }
             return;
         }
-            
+
+        // get speed limit from map
+        auto map_interface = PlusMapUtils::PlusMapPtr();
+        LaneMapNode current_map_node;
+        Vec2d ego_xy(_data_buffer.pose.x, _data_buffer.pose.y);
+        double road_speed_limit_mps = 0;
+        if ( map_interface != nullptr and map_interface->StatefulLocate(ego_xy, current_map_node) and
+            map_interface->GetSpeedLimit(current_map_node, road_speed_limit_mps,0)){
+            _data_buffer.planning_general_info.setSpeedLimit(road_speed_limit_mps * 2.237);
+            DLOG(INFO) << "get speed_limit_mph from map : " << _data_buffer.planning_general_info.getSpeedLimit();
+        }else{
+            DLOG(INFO) << "can't get speed limit from map, so use previous speed_limit_mph: " << _data_buffer.planning_general_info.getSpeedLimit();
+        }
+
     }
 
     void MessageHandler::handleOdom(const nav_msgs::Odometry::ConstPtr& msg) {
@@ -140,8 +148,8 @@ namespace hmi_message_publisher{
         pose.z = msg->pose.pose.position.z;
         pose.vx = msg->twist.twist.linear.x;
         pose.vy = msg->twist.twist.linear.y;
-    }
 
+    }
     void MessageHandler::handleObstacles(const std_msgs::String::ConstPtr& msg){
         DLOG(INFO) << "handleObstacles";
         auto& obstacle_extended_info_vec = _data_buffer.obstacle_extenged_info_vec;
@@ -155,7 +163,7 @@ namespace hmi_message_publisher{
         _data_buffer.obstacle_general_info.setObstacleCount(obstacle_detection.obstacle().size());
         for(const auto& obstacle : obstacle_detection.obstacle()){
             std::vector<double> imu_point;
-            ConvertWorld2IMU(_data_buffer.pose, imu_point, obstacle.motion().x(), obstacle.motion().y(), obstacle.motion().z());                      
+            ConvertWorld2IMU(_data_buffer.pose, imu_point, obstacle.motion().x(), obstacle.motion().y(), obstacle.motion().z());
             bool is_threat = false;
             // only when AEB is active, we make leading obstacle as the threat
             if(_data_buffer.active_AEB){
@@ -164,7 +172,7 @@ namespace hmi_message_publisher{
                     is_threat = true;
                 }
             }
-            hmi_message::ObstacleExtendedInfo obstacle_extended_info(obstacle.id(), imu_point[0], imu_point[1], obstacle.type(),is_threat); 
+            hmi_message::ObstacleExtendedInfo obstacle_extended_info(obstacle.id(), imu_point[0], imu_point[1], obstacle.type(),is_threat);
             obstacle_extended_info_vec.push_back(obstacle_extended_info);
         }
     }
@@ -174,7 +182,7 @@ namespace hmi_message_publisher{
         DLOG(INFO) << "set speed: " << msg.v_target;
         _data_buffer.planning_general_info.setSetSpeed(msg.v_target * 2.237);
     }
-    
+
     void MessageHandler::ConvertWorld2IMU(const Pose& pose, std::vector<double>& imu_point, const double& world_x, const double& world_y, const double& world_z) {
         Eigen::Isometry3d Tr_world_to_imu = pose.isometry3d().inverse();
         Eigen::Vector3d pt_world(world_x, world_y, world_z);
@@ -184,7 +192,7 @@ namespace hmi_message_publisher{
         imu_point[1] = pt_imu.y();
         imu_point[2] = pt_imu.z();
     }
-                                   
+
 }
 }
 }

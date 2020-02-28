@@ -56,6 +56,7 @@ class CanNode : public MessageHandler{
     static std::string planning_trajectory_topic;
     static std::string turn_signal_cmd_topic;
     static std::string longitudinal_report_topic;
+
 };
 }
 }
