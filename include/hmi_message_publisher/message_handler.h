@@ -25,6 +25,7 @@ class MessageHandler{
 
   protected:
     DataBuffer _data_buffer;
+    hmi_message::LRUCache _hmi_ob_id_cache;
 };
 
 }

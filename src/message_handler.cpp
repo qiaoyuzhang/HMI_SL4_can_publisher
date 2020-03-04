@@ -15,7 +15,8 @@ namespace HMI{
 namespace SL4{
 namespace hmi_message_publisher{
 
-    MessageHandler::MessageHandler(){}
+    MessageHandler::MessageHandler():
+    _hmi_ob_id_cache(hmi_message::ObstacleExtendedInfo_ob_id.max){}
 
     void MessageHandler::handleSteeringReport(const dbw_mkz_msgs::SteeringReport::ConstPtr& msg){
         DLOG(INFO) << "handleSteeringReport";
@@ -169,7 +170,8 @@ namespace hmi_message_publisher{
                 }
             }
             double lane_assignment = 0; // TODO: get real lane_assignment
-            hmi_message::ObstacleExtendedInfo obstacle_extended_info(obstacle.id(), lane_assignment, imu_point[0], imu_point[1], obstacle.type(),is_threat);
+            unsigned int hmi_ob_id = _hmi_ob_id_cache.put(obstacle.id());
+            hmi_message::ObstacleExtendedInfo obstacle_extended_info(hmi_ob_id, lane_assignment, imu_point[0], imu_point[1], obstacle.type(),is_threat);
             obstacle_extended_info_vec.push_back(obstacle_extended_info);
         }
     }
