@@ -168,7 +168,8 @@ namespace hmi_message_publisher{
                     is_threat = true;
                 }
             }
-            hmi_message::ObstacleExtendedInfo obstacle_extended_info(obstacle.id(), imu_point[0], imu_point[1], obstacle.type(),is_threat);
+            double lane_assignment = 0; // TODO: get real lane_assignment
+            hmi_message::ObstacleExtendedInfo obstacle_extended_info(obstacle.id(), lane_assignment, imu_point[0], imu_point[1], obstacle.type(),is_threat);
             obstacle_extended_info_vec.push_back(obstacle_extended_info);
         }
     }

@@ -1,5 +1,4 @@
 #include "hmi_message_publisher/obstacle_general_info_msg.h"
-#include "hmi_message_publisher/utils.h"
 #include <glog/logging.h>
 
 namespace HMI {
@@ -20,15 +19,12 @@ namespace hmi_message{
         _data_vec.resize(ObstacleGeneralInfo_data_size);   
     }
 
-    void ObstacleGeneralInfo::setObstacleCount(const int& num_obstacles){
-        unsigned int data = ObstacleGeneralInfo_ob_num.getData(num_obstacles);
-        writeDataToDataVector(_data_vec, ObstacleGeneralInfo_ob_num.data_start, ObstacleGeneralInfo_ob_num.len, data);
+    void ObstacleGeneralInfo::setObstacleCount(const int& num_obstacles) {
+        ObstacleGeneralInfo_ob_num.writeValueToDataVector(_data_vec, num_obstacles);
     }
 
-    bool ObstacleGeneralInfo::getObstacleCount(){
-        unsigned int data = 0; 
-        getDataFromDataVector(_data_vec, ObstacleGeneralInfo_ob_num.data_start, ObstacleGeneralInfo_ob_num.len, data);
-        return ObstacleGeneralInfo_ob_num.recoverValue(data);
+    bool ObstacleGeneralInfo::getObstacleCount() {
+        return ObstacleGeneralInfo_ob_num.recoverValueFromDataVector(_data_vec);
     }
 }
 }

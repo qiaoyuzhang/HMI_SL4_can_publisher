@@ -1,5 +1,7 @@
 #pragma once
 #include <math.h>
+#include "hmi_message_publisher/utils.h"
+
 namespace HMI {
 namespace SL4 {
 namespace hmi_message{
@@ -25,7 +27,7 @@ struct DataConfigInt{
     const int offset = 0;
     const unsigned int resolution = 1;
     const int max = 0;
-    
+
     DataConfigInt(const unsigned char& data_start, const unsigned char& len, const int& offset, const unsigned int& resolution):
         data_start(data_start),
         len(len),
@@ -33,9 +35,17 @@ struct DataConfigInt{
         resolution(resolution),
         max((pow(2.0, len)-1) * resolution + offset)
     {}
+
     int recoverValue(const unsigned int& data) const {
         return data*resolution + offset;
     }
+
+    int recoverValueFromDataVector(const std::vector<unsigned char>& data_vec) const {
+        unsigned int data = 0;
+        getDataFromDataVector(data_vec, data_start, len, data);
+        return this->recoverValue(data);
+    }
+
     unsigned int getData(const int& value) const {
         unsigned int data = 0;
         if (value <= offset){
@@ -45,9 +55,13 @@ struct DataConfigInt{
              data = (1 << len) - 1;
         }
         else {
-            data = ( value - offset) / resolution;
+            data = round((value - offset) / resolution);
         }
         return data;
+    }
+
+    void writeValueToDataVector(std::vector<unsigned char>& data_vec, const int& value) const{
+        writeDataToDataVector(data_vec, data_start, len, this->getData(value));
     }
 };
 
@@ -57,7 +71,7 @@ struct DataConfigDouble{
     const double offset = 0;
     const double resolution = 1;
     const double max = 0;
-    
+
     DataConfigDouble(const unsigned char& data_start, const unsigned char& len, const double& offset, const double& resolution):
         data_start(data_start),
         len(len),
@@ -65,10 +79,18 @@ struct DataConfigDouble{
         resolution(resolution),
         max((pow(2.0, len)-1) * resolution + offset)
         {}
+
     double recoverValue(const unsigned int& data) const {
         return data*resolution + offset;
     }
-    unsigned int getData (const int& value) const {
+
+    double recoverValueFromDataVector(const std::vector<unsigned char>& data_vec) const {
+        unsigned int data = 0;
+        getDataFromDataVector(data_vec, data_start, len, data);
+        return this->recoverValue(data);
+    }
+
+    unsigned int getData (const double& value) const {
         unsigned int data = 0;
         if (value <= offset){
             data = 0;
@@ -77,22 +99,38 @@ struct DataConfigDouble{
             data = (1 << len) - 1;
         }
         else {
-            data = (value - offset) / resolution;
+            data = round((value - offset) / resolution);
         }
         return data;
     }
-};    
+
+    void writeValueToDataVector(std::vector<unsigned char>& data_vec, const double& value) const{
+        writeDataToDataVector(data_vec, data_start, len, this->getData(value));
+    }
+};
 
 struct DataConfigBool{
     const unsigned char data_start = 0;
     const unsigned char len = 1;
     DataConfigBool(const unsigned char& data_start):
         data_start(data_start){}
+
     bool recoverValue(const unsigned int& data) const {
         return data == 0? false : true;
     }
+
+    bool recoverValueFromDataVector(const std::vector<unsigned char>& data_vec) const {
+        unsigned int data = 0;
+        getDataFromDataVector(data_vec, data_start, len, data);
+        return recoverValue(data);
+    }
+
     unsigned int getData(const bool& value) const {
         return value? 1: 0;
+    }
+
+    void writeValueToDataVector(std::vector<unsigned char>& data_vec, const bool& value) const{
+        writeDataToDataVector(data_vec, data_start, len, this->getData(value));
     }
 };
 
@@ -115,13 +153,14 @@ static const DataConfigInt ObstacleGeneralInfo_ob_num(0,8,0,1);
 static const unsigned int ObstacleGeneralInfo_data_total_bit = 8;
 static const unsigned int ObstacleGeneralInfo_data_size = n_byte(ObstacleGeneralInfo_data_total_bit);
 
-static const DataConfigInt ObstacleExtendedInfo_ob_id(0,12,0,1);
-static const DataConfigDouble ObstacleExtendedInfo_dist_long(12,12,-2048,1);
-static const DataConfigDouble ObstacleExtendedInfo_dist_lat(24,12,-200,0.5);
-static const DataConfigInt ObstacleExtendedInfo_ob_class(36,5,0,1);
-static const DataConfigBool ObstacleExtendedInfo_ob_threat(41);
+static const DataConfigInt ObstacleExtendedInfo_ob_id(0,8,0,1);
+static const DataConfigInt ObstacleExtendedInfo_lane_assignment(8,2,0,1);
+static const DataConfigDouble ObstacleExtendedInfo_dist_long(10,10,-10.0,0.25);
+static const DataConfigDouble ObstacleExtendedInfo_dist_lat(20,6,-3.2, 0.1);
+static const DataConfigInt ObstacleExtendedInfo_ob_class(26,5,0,1);
+static const DataConfigBool ObstacleExtendedInfo_ob_threat(31);
 
-static const unsigned int ObstacleExtendedInfo_data_total_bit = 42; //sum of all lens in the message
+static const unsigned int ObstacleExtendedInfo_data_total_bit = 32; //sum of all lens in the message
 static const unsigned int ObstacleExtendedInfo_data_size = n_byte(ObstacleExtendedInfo_data_total_bit);
 
 // Lane
