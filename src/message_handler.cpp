@@ -161,6 +161,12 @@ namespace hmi_message_publisher{
         for(const auto& obstacle : obstacle_detection.obstacle()){
             std::vector<double> imu_point;
             ConvertWorld2IMU(_data_buffer.pose, imu_point, obstacle.motion().x(), obstacle.motion().y(), obstacle.motion().z());
+            
+            // filter out the rear obstacles
+            if (imu_point[0] <= 0){
+                continue;
+            }
+
             bool is_threat = false;
             // only when AEB is active, we make leading obstacle as the threat
             if(_data_buffer.active_AEB){
