@@ -5,6 +5,7 @@
 #include "plusmap/plusmap_utils.h"
 #include "math/vec2d.h"
 #include <glog/logging.h>
+#include <cmath>
 
 using namespace drive::common::perception;
 using namespace drive::common::planning;
@@ -175,9 +176,31 @@ namespace hmi_message_publisher{
                     is_threat = true;
                 }
             }
-            double lane_assignment = 0; // TODO: get real lane_assignment
+
+            // naive lane_assignment
+            // assume lane is straight, lane_width is 3.6 and we are driving in the middle of the lane
+            // TODO we should switch to https://github.com/PlusAI/drive/pull/6904 when it is ready
+            int lane_assignment = 0;
+            double y = imu_point[1];
+            if(std::abs(imu_point[1]) > 5.4){
+                // skip the obstacle, if it was not in the ego/left/right lane
+                continue;
+            }
+            else{
+                if(std::abs(imu_point[1]) <= 1.8){
+                    lane_assignment = 2; // ego lane
+                }
+                else if(imu_point[1] > 1.8){
+                    lane_assignment = 1; // left lane
+                    y = imu_point[1] - 3.6;
+                }else{
+                    lane_assignment = 2; // right lane
+                    y = imu_point[1] + 3.6;
+                }
+            }
+
             unsigned int hmi_ob_id = _hmi_ob_id_cache.put(obstacle.id());
-            hmi_message::ObstacleExtendedInfo obstacle_extended_info(hmi_ob_id, lane_assignment, imu_point[0], imu_point[1], obstacle.type(),is_threat);
+            hmi_message::ObstacleExtendedInfo obstacle_extended_info(hmi_ob_id, lane_assignment, imu_point[0], y, obstacle.type(),is_threat);
             obstacle_extended_info_vec.push_back(obstacle_extended_info);
         }
     }
