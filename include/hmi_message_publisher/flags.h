@@ -13,3 +13,4 @@ DECLARE_string(dbw_enable_topic);
 DECLARE_string(planning_trajectory_topic);
 DECLARE_string(turn_signal_cmd_topic);
 DECLARE_string(longitudinal_report_topic);
+DECLARE_string(speed_unit);

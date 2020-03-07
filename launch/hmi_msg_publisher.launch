@@ -15,6 +15,7 @@
     <arg name="plusmap_annotation_file" default="$(optenv PLUSMAP_ANNOTATION_FILE /opt/plusai/external/opt/plusai/plusmap/proto/280_wolfe_sandhill_and_local/280_wolfe_sandhill_and_local.annotation.pb)" />
     <arg name="plusmap_route_file" default="$(optenv PLUSMAP_ROUTE_FILE /opt/plusai/external/opt/plusai/plusmap/proto/280_wolfe_sandhill_and_local/280_wolfe_sandhill_and_local.plan_route.pb)" />
     <arg name="projection_coordinate" default="$(optenv PROJECTION_COORDINATE eqdc)" />
+    <arg name="speed_unit" default="mph" doc="speed unit( only support: kph, mph)">
     <node pkg="hmi_message_publisher" name="hmi_message_publisher_node" type="hmi_message_publisher_node" output="screen" required="true">
         <param name="~/ifname0" value="$(arg ifname0)"/>
         <param name="use_threat_obstacle_topic" value="$(arg use_threat_obstacle_topic)"/>

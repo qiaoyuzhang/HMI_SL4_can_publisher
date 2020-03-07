@@ -11,3 +11,4 @@ DEFINE_string(dbw_enable_topic, "", "");
 DEFINE_string(planning_trajectory_topic, "", "");
 DEFINE_string(turn_signal_cmd_topic, "", "");
 DEFINE_string(longitudinal_report_topic, "", "");
+DEFINE_string(speed_unit, "", "");

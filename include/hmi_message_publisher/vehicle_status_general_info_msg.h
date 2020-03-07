@@ -29,7 +29,7 @@ class VehicleStatusGeneralInfo {
         VectorDataType getVectorData() const { return _data_vec; }
     
     private:
-        
+
         VectorDataType _data_vec; 
 
        

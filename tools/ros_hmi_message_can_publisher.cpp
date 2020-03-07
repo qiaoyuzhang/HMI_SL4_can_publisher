@@ -1,6 +1,6 @@
 #include "hmi_message_publisher/can_node.h"
 #include "base/program.h"
-#include "plusmap/plusmap_utils.h"
+#include "plusmap/common/plusmap_utils.h"
 #include "hmi_message_publisher/flags.h"
 #include <glog/logging.h>
 using namespace HMI::SL4::hmi_message_publisher;
@@ -23,6 +23,7 @@ class HmiMessagePublisherProgram: public ROSProgram {
         CanNode::PlanningTrajectoryTopic() = FLAGS_planning_trajectory_topic;
         CanNode::TurnSignalCmdTopic() = FLAGS_turn_signal_cmd_topic;
         CanNode::LongitudinalReportTopic() = FLAGS_longitudinal_report_topic;
+        CanNode::SpeedUnit() = FLAGS_speed_unit;
 
         return true;
     }

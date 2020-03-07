@@ -6,14 +6,14 @@ using namespace HMI::SL4::hmi_message;
 TEST(VehicleStatusGeneralInfo, initialization) {
     
     VehicleEngageStatus engage_status = NOT_READY;
-    int speed_test = VehicleStatusGeneralInfo_speed.offset - VehicleStatusGeneralInfo_speed.resolution; 
+    double speed_test = VehicleStatusGeneralInfo_speed.offset - VehicleStatusGeneralInfo_speed.resolution;
     VehicleStatusGeneralInfo vehicle_status1(speed_test, 100, engage_status);
     ASSERT_EQ(VehicleStatusGeneralInfo_speed.offset, vehicle_status1.getSpeed());
     ASSERT_EQ(100, vehicle_status1.getSteeringAngle());
     ASSERT_EQ(engage_status, vehicle_status1.getEngageStatus());
     
     engage_status = READY;
-    speed_test = VehicleStatusGeneralInfo_speed.max + VehicleStatusGeneralInfo_speed.resolution;     
+    speed_test = VehicleStatusGeneralInfo_speed.max + VehicleStatusGeneralInfo_speed.resolution;
     VehicleStatusGeneralInfo vehicle_status2(speed_test, 300, engage_status);
     ASSERT_EQ(VehicleStatusGeneralInfo_speed.max, vehicle_status2.getSpeed());
     ASSERT_EQ(300, vehicle_status2.getSteeringAngle());
@@ -39,9 +39,9 @@ TEST(VehicleStatusGeneralInfo, set_value) {
     VehicleEngageStatus engage_status = NOT_READY;
     VehicleStatusGeneralInfo vehicle_status(100, 0, engage_status);
 
-    vehicle_status.setSpeed(300);
+    vehicle_status.setSpeed(20);
 
-    ASSERT_EQ(300, vehicle_status.getSpeed());
+    ASSERT_EQ(20, vehicle_status.getSpeed());
 
     vehicle_status.setSteeringAngle(200);
 

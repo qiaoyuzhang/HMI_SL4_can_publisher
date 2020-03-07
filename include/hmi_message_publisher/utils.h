@@ -96,6 +96,15 @@ class LRUCache {
     unsigned int _cacheCapacity;
 };
 
+inline int mps_to_kph(const double& speed_mps){
+    int speed_kph = speed_mps * 3.6;
+    return speed_kph;
+}
+
+inline int mps_to_mph(const double& speed_mps){
+    int speed_mph = speed_mps * 2.237;
+    return speed_mph;
+}
 
 }
 }

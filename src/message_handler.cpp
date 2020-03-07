@@ -2,7 +2,7 @@
 #include "common/lane_detection.pb.h"
 #include "common/obstacle_detection.pb.h"
 #include "common/planning_trajectory.pb.h"
-#include "plusmap/plusmap_utils.h"
+#include "plusmap/common/plusmap_utils.h"
 #include "math/vec2d.h"
 #include <glog/logging.h>
 #include <cmath>
@@ -16,13 +16,15 @@ namespace HMI{
 namespace SL4{
 namespace hmi_message_publisher{
 
+std::string MessageHandler::_speed_unit("mph");
+
     MessageHandler::MessageHandler():
     _hmi_ob_id_cache(hmi_message::ObstacleExtendedInfo_ob_id.max){}
 
     void MessageHandler::handleSteeringReport(const dbw_mkz_msgs::SteeringReport::ConstPtr& msg){
         DLOG(INFO) << "handleSteeringReport";
-        DLOG(INFO) << "speed: " << msg->speed * 2.237 << " steering_angle: " << msg->steering_wheel_angle;
-        _data_buffer.vehicle_status_general_info.setSpeed(msg->speed * 2.237);
+        DLOG(INFO) << "speed : " << ConvertSpeedUnitFromMps(msg->speed) << " " << _speed_unit << ", steering_angle: " << msg->steering_wheel_angle;
+        _data_buffer.vehicle_status_general_info.setSpeed(ConvertSpeedUnitFromMps(msg->speed));
         _data_buffer.vehicle_status_general_info.setSteeringAngle(msg->steering_wheel_angle * 57.296);
 
     }
@@ -124,10 +126,11 @@ namespace hmi_message_publisher{
         double road_speed_limit_mps = 0;
         if ( map_interface != nullptr and map_interface->StatefulLocate(ego_xy, current_map_node) and
             map_interface->GetSpeedLimit(current_map_node, road_speed_limit_mps,0)){
-            _data_buffer.planning_general_info.setSpeedLimit(road_speed_limit_mps * 2.237);
-            DLOG(INFO) << "get speed_limit_mph from map : " << _data_buffer.planning_general_info.getSpeedLimit();
+
+            DLOG(INFO) << "get speed_limit from map : " << ConvertSpeedUnitFromMps(road_speed_limit_mps) << " " << _speed_unit;
+            _data_buffer.planning_general_info.setSpeedLimit(ConvertSpeedUnitFromMps(road_speed_limit_mps));
         }else{
-            DLOG(INFO) << "can't get speed limit from map, so use previous speed_limit_mph: " << _data_buffer.planning_general_info.getSpeedLimit();
+            DLOG(INFO) << "can't get speed limit from map, so use previous speed_limit: " << _data_buffer.planning_general_info.getSpeedLimit() << " " << _speed_unit;
         }
 
     }
@@ -162,7 +165,7 @@ namespace hmi_message_publisher{
         for(const auto& obstacle : obstacle_detection.obstacle()){
             std::vector<double> imu_point;
             ConvertWorld2IMU(_data_buffer.pose, imu_point, obstacle.motion().x(), obstacle.motion().y(), obstacle.motion().z());
-            
+
             // filter out the rear obstacles
             if (imu_point[0] <= 0){
                 continue;
@@ -207,8 +210,8 @@ namespace hmi_message_publisher{
 
     void MessageHandler::handleLongitudinalReport(const plusai_msgs::LongitudinalControlReport& msg) {
         DLOG(INFO) << "handleLongitudinalReport";
-        DLOG(INFO) << "set speed: " << msg.v_target;
-        _data_buffer.planning_general_info.setSetSpeed(msg.v_target * 2.237);
+        DLOG(INFO) << "set speed: " << ConvertSpeedUnitFromMps(msg.v_target) << " " << _speed_unit;
+        _data_buffer.planning_general_info.setSetSpeed(ConvertSpeedUnitFromMps(msg.v_target));
     }
 
     void MessageHandler::ConvertWorld2IMU(const Pose& pose, std::vector<double>& imu_point, const double& world_x, const double& world_y, const double& world_z) {
@@ -220,7 +223,18 @@ namespace hmi_message_publisher{
         imu_point[1] = pt_imu.y();
         imu_point[2] = pt_imu.z();
     }
-
+    int MessageHandler::ConvertSpeedUnitFromMps(const double& speed_mps){
+        if(_speed_unit == "kph"){
+            return hmi_message::mps_to_kph(speed_mps);
+        }
+        else if( _speed_unit == "mph"){
+            return hmi_message::mps_to_mph(speed_mps);
+        }
+        else {
+            LOG(ERROR) << "unkown speed unit: " << _speed_unit << ", we can only support kph or mph";
+        }
+        return 0;
+    }
 }
 }
 }

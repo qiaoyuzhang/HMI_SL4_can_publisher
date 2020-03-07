@@ -140,11 +140,11 @@ static unsigned int n_byte(const unsigned int n_bit){
 };
 
 // VehicleStatus
-static const DataConfigInt VehicleStatusGeneralInfo_speed(0,10,-256,1);
-static const DataConfigInt VehicleStatusGeneralInfo_steering_angle(10,11,-1024,1);
-static const DataConfigInt VehicleStatusGeneralInfo_engage_status(21,2,0,1);
+static const DataConfigInt VehicleStatusGeneralInfo_speed(0,8,0,1);
+static const DataConfigInt VehicleStatusGeneralInfo_steering_angle(8,11,-1024,1);
+static const DataConfigInt VehicleStatusGeneralInfo_engage_status(19,2,0,1);
 
-static const unsigned int VehicleStatusGeneralInfo_data_total_bit = 23; //sum of all lens in the message
+static const unsigned int VehicleStatusGeneralInfo_data_total_bit = 21; //sum of all lens in the message
 static const unsigned int VehicleStatusGeneralInfo_data_size = n_byte(VehicleStatusGeneralInfo_data_total_bit);
 
 // Obstacle
@@ -174,8 +174,8 @@ static const unsigned int LaneGeneralInfo_data_size = n_byte(LaneGeneralInfo_dat
 static const DataConfigBool PlanningGeneralInfo_allow_lane_change(0);
 static const DataConfigBool PlanningGeneralInfo_left_lane_change_cmd(1);
 static const DataConfigBool PlanningGeneralInfo_right_lane_change_cmd(2);
-static const DataConfigDouble PlanningGeneralInfo_set_speed(3,8,0,1);
-static const DataConfigDouble PlanningGeneralInfo_speed_limit(11,8,0,1);
+static const DataConfigInt PlanningGeneralInfo_set_speed(3,8,0,1);
+static const DataConfigInt PlanningGeneralInfo_speed_limit(11,8,0,1);
 
 static const unsigned int PlanningGeneralInfo_data_total_bit = 19; //sum of all lens in the message
 static const unsigned int PlanningGeneralInfo_data_size = n_byte(PlanningGeneralInfo_data_total_bit);
