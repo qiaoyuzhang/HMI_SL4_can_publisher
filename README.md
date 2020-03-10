@@ -50,3 +50,7 @@ More example is in  `hmi_message/test`
 ```
     $ roslaunch hmi_message_publisher hmi_message_publisher.launch
 ```
+
+## Message definition
+[message defintion](./doc/hmi_message_definition.md)
+
