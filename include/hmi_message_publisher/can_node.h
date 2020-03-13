@@ -7,6 +7,8 @@
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/time_synchronizer.h>
 #include "can_common/can_interface.h"
+#include "common/status_report_msg.pb.h"
+#include "monitor/status_reporter.h"
 
 namespace HMI {
 namespace SL4{
@@ -42,9 +44,15 @@ class CanNode : public MessageHandler{
     ros::Subscriber planning_trajectory_sub_;
     ros::Subscriber longitudinal_report_sub_;
 
+    // hmi status publisher
+    drive::common::monitor::StatusReporter& status_reporter_;
+
     void writeDataToCan(const ros::TimerEvent&);
+    void publishStatusReport(const ros::TimerEvent&);
+
     drive::common::CanInterface can_;
-    ros::Timer timer;
+    ros::Timer timer_write_to_can_;
+    ros::Timer timer_publish_status_report_;
 
     static bool use_threat_obstacle_topic;
     static std::string perception_obstacle_topic;
@@ -56,7 +64,7 @@ class CanNode : public MessageHandler{
     static std::string planning_trajectory_topic;
     static std::string turn_signal_cmd_topic;
     static std::string longitudinal_report_topic;
-
+ 
 };
 }
 }

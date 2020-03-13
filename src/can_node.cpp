@@ -15,17 +15,25 @@ std::string CanNode::dbw_enable_topic("");
 std::string CanNode::planning_trajectory_topic("");
 std::string CanNode::turn_signal_cmd_topic("");
 std::string CanNode::longitudinal_report_topic("");
-    
+
 CanNode::CanNode(const int index)
-    : can_(index) {
+    : can_(index),
+    status_reporter_(drive::common::monitor::StatusReporter::getInstance()) {
         init();
     }
 
 void CanNode::init(){
     DLOG(INFO) << "CanNode::init";
+
+    // init status reporter
+    status_reporter_.init(node_);
+
     // set timer to write message to can every 0.1 s
-    timer = node_.createTimer(ros::Duration(0.1), &CanNode::writeDataToCan, (CanNode*)this);
-    
+    timer_write_to_can_ = node_.createTimer(ros::Duration(0.1), &CanNode::writeDataToCan, (CanNode*)this);
+
+    // set timer to publish status report to can every 1 s
+    timer_publish_status_report_ = node_.createTimer(ros::Duration(1), &CanNode::publishStatusReport, (CanNode*)this);
+
     lane_sub_ = node_.subscribe(lane_path_topic,
                                 10,
                                 &MessageHandler::handleLanePath,
@@ -67,8 +75,9 @@ void CanNode::init(){
                                                1,
                                                &MessageHandler::handleLongitudinalReport,
                                                (MessageHandler*)this);
+
 }
-    
+
 void CanNode::Run(){
         DLOG(INFO) << "CanNode::Run";
         can_.Start();
@@ -77,7 +86,7 @@ void CanNode::Run(){
 }
 
 void CanNode::writeDataToCan(const ros::TimerEvent& event){
-    DLOG(INFO) << "write data to Can";     
+    DLOG(INFO) << "write data to Can";
 
     can_.WriteToCan(hmi_message::VehicleStatusGeneralInfoMsgId, _data_buffer.vehicle_status_general_info.getVectorData());
     can_.WriteToCan(hmi_message::ObstacleGeneralInfoMsgId, _data_buffer.obstacle_general_info.getVectorData());
@@ -91,6 +100,9 @@ void CanNode::writeDataToCan(const ros::TimerEvent& event){
     can_.WriteToCan(hmi_message::PlanningGeneralInfoMsgId, _data_buffer.planning_general_info.getVectorData());
 }
 
+void CanNode::publishStatusReport(const ros::TimerEvent& event){
+    status_reporter_.pub();
+}
 
 }
 }
