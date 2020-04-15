@@ -1,5 +1,5 @@
-#include "hmi_message_publisher/const_vars.h"
 #include <vector>
+#include "hmi_message_publisher/const_vars.h"
 
 namespace HMI {
 namespace SL4 {
@@ -12,25 +12,22 @@ using VectorDataType = std::vector<unsigned char>;
  */
 
 class LaneGeneralInfo {
-    public:
-        LaneGeneralInfo();
-        LaneGeneralInfo(const bool& left_lane_exist, const bool& right_lane_exist);
-        LaneGeneralInfo(const VectorDataType& data_vector);   
-       
-        void setLeftLaneExist(const bool& left_lane_exist);
-        void setRightLaneExist(const bool& right_lane_exist);
-        
-        bool getLeftLaneExist();
-        bool getRightLaneExist();
-        
-        VectorDataType getVectorData() const { return _data_vec; }
-    
-    private:
-        
-        VectorDataType _data_vec; 
+  public:
+    LaneGeneralInfo();
+    LaneGeneralInfo(const bool& left_lane_exist, const bool& right_lane_exist);
+    LaneGeneralInfo(const VectorDataType& data_vector);
 
-       
-    };
-}
+    void setLeftLaneExist(const bool& left_lane_exist);
+    void setRightLaneExist(const bool& right_lane_exist);
+
+    bool getLeftLaneExist();
+    bool getRightLaneExist();
+
+    VectorDataType getVectorData() const { return _data_vec; }
+
+  private:
+    VectorDataType _data_vec;
+};
+}  // namespace hmi_message
 }  // namespace SL4
 }  // namespace HMI

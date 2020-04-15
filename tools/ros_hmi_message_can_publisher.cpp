@@ -1,18 +1,17 @@
-#include "hmi_message_publisher/can_node.h"
-#include "base/program.h"
-#include "plusmap/common/plusmap_utils.h"
-#include "hmi_message_publisher/flags.h"
 #include <glog/logging.h>
+#include "base/program.h"
+#include "hmi_message_publisher/can_node.h"
+#include "hmi_message_publisher/flags.h"
+#include "plusmap/common/plusmap_utils.h"
 using namespace HMI::SL4::hmi_message_publisher;
 using namespace drive::common::base;
 
 static const std::string node_name = "hmi_message_can_publisher_node";
-class HmiMessagePublisherProgram: public ROSProgram {
- public:
+class HmiMessagePublisherProgram : public ROSProgram {
+  public:
     HmiMessagePublisherProgram() : ROSProgram(node_name){};
 
     bool init() override {
-
         CanNode::UseThreatObstacleTopic() = FLAGS_use_threat_obstacle_topic;
         CanNode::PerceptionObstacleTopic() = FLAGS_perception_obstacle_topic;
         CanNode::ThreatObstacleTopic() = FLAGS_threat_obstacle_topic;
@@ -29,14 +28,12 @@ class HmiMessagePublisherProgram: public ROSProgram {
     }
 
     void go() override {
-
         CanNode can_node(0);
         can_node.Run();
     }
 };
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
     HmiMessagePublisherProgram p;
     return p.run(argc, argv);
 }

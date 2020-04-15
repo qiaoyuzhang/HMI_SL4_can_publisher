@@ -15,30 +15,28 @@ if [ -z "$build_num" ]; then
     build_num="0"
 fi
 
-cat > ${WORKSPACE}/plusai_hmi_can_publisher.yaml <<EOF
-can_common:
-  ubuntu: [ros-kinetic-can-common]
-plusai_msgs:
-  ubuntu: [ros-kinetic-plusai-msgs]
-EOF
-
-cat > ${WORKSPACE}/plusai_hmi_can_publisher.list <<EOF
-yaml file:////${WORKSPACE}/plusai_hmi_can_publisher.yaml
-EOF
-
-# Put this first so our packages get found first.
-sudo cp plusai_hmi_can_publisher.list /etc/ros/rosdep/sources.list.d/00-plusai_hmi_can_publisher.list
+rm -rf packages
+mkdir -p packages
 
 rosdep update
 
-cd code
+function build_and_install_package {
+  cd $WORKSPACE/src/$1
+  rosdep install --from-paths . --ignore-src -y
+  sed -i s//$2/$3 package.xml
+  rm -rf obj-* debian build
+  echo "-----------------------"
+  echo "Building $1"
+  echo "-----------------------"
+  bloom-generate rosdebian .
+  fakeroot make -d -f debian/rules binary
+  rm -rf obj-* debian build
+  cd $WORKSPACE
+  mv src/*.deb packages
+  echo "-----------------------"
+  echo "Installing $1 (and other packages)"
+  echo "-----------------------"
+  sudo dpkg -i packages/*.deb
+}
 
-old_ver="0.1.0"
-new_ver="0.1.$build_num"
-sed -i s/$old_ver/$new_ver/ package.xml
-
-bloom-generate rosdebian --os-name ubuntu \
-                         --os-version xenial \
-                         --ros-distro kinetic .
- 
-fakeroot make -d -f debian/rules binary
+build_and_install_package "hmi_message_publisher" "0.0.0" "0.1.$build_num"

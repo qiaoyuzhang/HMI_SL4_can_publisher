@@ -1,8 +1,7 @@
 #include "hmi_message_publisher/flags.h"
 
-
 DEFINE_bool(use_threat_obstacle_topic, false, "");
-DEFINE_string(perception_obstacle_topic, "","");
+DEFINE_string(perception_obstacle_topic, "", "");
 DEFINE_string(threat_obstacle_topic, "", "");
 DEFINE_string(lane_path_topic, "", "");
 DEFINE_string(odom_topic, "", "");

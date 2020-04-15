@@ -32,6 +32,10 @@ if(NOT DEFINED DRIVE_ROOT)
 endif()
 message(STATUS "DRIVE_ROOT: ${DRIVE_ROOT}")
 
+# need the following so that find_package can locate PlusaiCommon and other
+# auto-generated cmake files
+list(APPEND CMAKE_PREFIX_PATH "/opt/plusai")
+
 # precompiled thirdparty libaries
 set(EXTERNAL_LIB_DIR "/opt/plusai/external/opt")
 if(DEFINED ENV{EXTERNAL_LIB_DIR})
@@ -127,9 +131,8 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 message(STATUS "EIGEN3_VERSION: ${EIGEN3_VERSION}")
 
 # Protobuf
-include(FindProtobuf)
-find_package(Protobuf REQUIRED 3.2.0)
-include_directories(SYSTEM ${PROTOBUF_INCLUDE_DIRS})
+find_package(Protobuf REQUIRED 3.6.1)
+include_directories(${PROTOBUF_INCLUDE_DIRS})
 link_directories(${PROTOBUF_LIB_DIR})
 message(STATUS "PROTOBUF_FOUND: ${PROTOBUF_FOUND}")
 message(STATUS "PROTOBUF_INCLUDE_DIR: ${PROTOBUF_INCLUDE_DIR}")
@@ -160,6 +163,12 @@ find_package(JsonCpp REQUIRED)
 include_directories(${JsonCpp_INCLUDE_DIRS})
 message(STATUS "JsonCpp_INCLUDE_DIRS: ${JsonCpp_INCLUDE_DIRS}")
 message(STATUS "JsonCpp_LIBRARIES: ${JsonCpp_LIBRARIES}")
+
+# PlusaiCommon
+find_package(PlusaiCommon REQUIRED)
+include_directories(${PlusaiCommon_INCLUDE_DIRS})
+link_directories(${PlusaiCommon_LIBRARY_DIRS})
+
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # include_directories(../hmi_message/include)
@@ -203,8 +212,8 @@ target_link_libraries(${PROJECT_NAME}_lib
   ${GFLAGS_LIBRARIES}
   ${PROTOBUF_LIBRARIES}
   ${JsonCpp_LIBRARIES}
+  ${PlusaiCommon_LIBRARIES}
   drive_common
-  drive_common_proto
   drive_plusmap
 )
 
@@ -215,8 +224,8 @@ target_link_libraries(${PROJECT_NAME}_node
   ${GFLAGS_LIBRARIES}
   ${PROTOBUF_LIBRARIES}
   ${JsonCpp_LIBRARIES}
+  ${PlusaiCommon_LIBRARIES}
   drive_common
-  drive_common_proto
   drive_plusmap
 )
 

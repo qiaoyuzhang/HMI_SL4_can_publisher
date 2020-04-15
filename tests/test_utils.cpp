@@ -46,7 +46,6 @@ TEST(Utils, get_data) {
 
     getDataFromDataVector(data_vector, 0, 16, data);
     ASSERT_EQ(65521, data);
-
 }
 
 TEST(Utils, convert_data) {
@@ -77,11 +76,9 @@ TEST(Utils, convert_data) {
     rec_data = 0;
     getDataFromDataVector(data_vector, 37, 15, rec_data);
     ASSERT_EQ(rec_data, data);
-
 }
 
 TEST(Utils, LRUCache) {
-
     LRUCache lru_cache(3);
 
     ASSERT_EQ(lru_cache.get(12345), -1);
@@ -94,19 +91,18 @@ TEST(Utils, LRUCache) {
     lru_cache.put(77214);
     ASSERT_EQ(lru_cache.get(77214), 2);
 
-    lru_cache.put(34567); // evicts key 12345 and reuse it's value
+    lru_cache.put(34567);  // evicts key 12345 and reuse it's value
     ASSERT_EQ(lru_cache.get(12345), -1);
     ASSERT_EQ(lru_cache.get(34567), 0);
 
-    lru_cache.get(54321); // make 54321 to the front
+    lru_cache.get(54321);  // make 54321 to the front
 
-    lru_cache.put(88998); // evicts key 77214, and reuse it's value
+    lru_cache.put(88998);  // evicts key 77214, and reuse it's value
     ASSERT_EQ(lru_cache.get(77214), -1);
     ASSERT_EQ(lru_cache.get(88998), 2);
 }
 
-
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

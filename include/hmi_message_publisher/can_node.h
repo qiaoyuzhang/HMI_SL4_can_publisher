@@ -1,38 +1,38 @@
 #pragma once
 
-#include <map>
-#include <string>
-#include "hmi_message_publisher/message_handler.h"
 #include <message_filters/subscriber.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/time_synchronizer.h>
+#include <map>
+#include <string>
 #include "can_common/can_interface.h"
-#include "common/status_report_msg.pb.h"
+#include "hmi_message_publisher/message_handler.h"
+#include "monitor/status_report_msg.pb.h"
 #include "monitor/status_reporter.h"
 
 namespace HMI {
-namespace SL4{
-namespace hmi_message_publisher{
+namespace SL4 {
+namespace hmi_message_publisher {
 
-class CanNode : public MessageHandler{
+class CanNode : public MessageHandler {
   public:
-    CanNode(const int index); 
+    CanNode(const int index);
     void Run();
 
-    static bool &UseThreatObstacleTopic() {return use_threat_obstacle_topic;};
-    static std::string &PerceptionObstacleTopic() {return perception_obstacle_topic;};
-    static std::string &ThreatObstacleTopic() {return threat_obstacle_topic;};
-    static std::string &LanePathTopic() {return lane_path_topic;};
-    static std::string &OdomTopic() {return odom_topic;};
-    static std::string &SteeringReportTopic() {return steering_report_topic;};
-    static std::string &DbwEnableTopic() {return dbw_enable_topic;};
-    static std::string &PlanningTrajectoryTopic() {return planning_trajectory_topic;};
-    static std::string &TurnSignalCmdTopic() {return turn_signal_cmd_topic;};
-    static std::string &LongitudinalReportTopic() {return longitudinal_report_topic;};
+    static bool& UseThreatObstacleTopic() { return use_threat_obstacle_topic; };
+    static std::string& PerceptionObstacleTopic() { return perception_obstacle_topic; };
+    static std::string& ThreatObstacleTopic() { return threat_obstacle_topic; };
+    static std::string& LanePathTopic() { return lane_path_topic; };
+    static std::string& OdomTopic() { return odom_topic; };
+    static std::string& SteeringReportTopic() { return steering_report_topic; };
+    static std::string& DbwEnableTopic() { return dbw_enable_topic; };
+    static std::string& PlanningTrajectoryTopic() { return planning_trajectory_topic; };
+    static std::string& TurnSignalCmdTopic() { return turn_signal_cmd_topic; };
+    static std::string& LongitudinalReportTopic() { return longitudinal_report_topic; };
 
   private:
     void init();
-    
+
     ros::NodeHandle node_;
 
     ros::Subscriber lane_sub_;
@@ -64,8 +64,7 @@ class CanNode : public MessageHandler{
     static std::string planning_trajectory_topic;
     static std::string turn_signal_cmd_topic;
     static std::string longitudinal_report_topic;
- 
 };
-}
-}
-}
+}  // namespace hmi_message_publisher
+}  // namespace SL4
+}  // namespace HMI
