@@ -32,22 +32,17 @@ pipeline {
             steps {
                 // See: https://jenkins.io/doc/pipeline/steps/workflow-scm-step/
                 script {
-                    dir("code") {
-                        def scm_vars = checkout scm
-                        printMap(scm_vars, "My scm vars are:")
-                        printMap(env.getEnvironment(), "My environment is:")
-                        env.GIT_COMMIT = scm_vars.GIT_COMMIT
-                        env.GIT_BRANCH = scm_vars.GIT_BRANCH
-                    }
+                    def scm_vars = checkout scm
+                    printMap(scm_vars, "My scm vars are:")
+                    printMap(env.getEnvironment(), "My environment is:")
+                    env.GIT_COMMIT = scm_vars.GIT_COMMIT
+                    env.GIT_BRANCH = scm_vars.GIT_BRANCH
                 }
                 milestone(ordinal: 0, label: "CHECKOUT_FINISH_MILESTONE")
             }
         }
         stage("Environment setup") {
             steps {
-                script {
-                    env.ROS_HOME = "${env.WORKSPACE}/.ros/"
-                }
                 sh """
                 rm -rf ${env.ROS_HOME}
                 mkdir ${env.ROS_HOME}
@@ -58,16 +53,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry("${env.DOCKER_REPO_URL}", "${env.DOCKER_REPO_HOST_CRED}") {
-                        def img = docker.image(env.BASE_IMAGE)
-                        img.inside {
-                            sh """
-                            # Get a newer rosdep, the ubuntu one seems busted...
-                            virtualenv --system-site-packages .venv
-                            . .venv/bin/activate
-                            cp code/package.sh .
-                            ./package.sh
-                            """
-                        }
+                        runWithImage(env.BASE_IMAGE, "./package.sh")
                     }
                 }
             }
@@ -80,7 +66,7 @@ pipeline {
                 // Upload to our jenkins master so that we can kick a job that will
                 // put this in our debian repo for later usage/download/install/whatever.
                 script {
-                    def am_sent = uploadPackages("${env.WORKSPACE}", "${env.WORKSPACE}")
+                    def am_sent = uploadPackages("${env.WORKSPACE}/packages", "${env.WORKSPACE}/packages")
                     if (am_sent == 0) {
                         throw new RuntimeException("No packages were built (or sent)!")
                     }

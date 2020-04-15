@@ -15,30 +15,40 @@ if [ -z "$build_num" ]; then
     build_num="0"
 fi
 
-cat > ${WORKSPACE}/plusai_hmi_can_publisher.yaml <<EOF
-can_common:
-  ubuntu: [ros-kinetic-can-common]
-plusai_msgs:
-  ubuntu: [ros-kinetic-plusai-msgs]
-EOF
-
-cat > ${WORKSPACE}/plusai_hmi_can_publisher.list <<EOF
-yaml file:////${WORKSPACE}/plusai_hmi_can_publisher.yaml
-EOF
-
-# Put this first so our packages get found first.
-sudo cp plusai_hmi_can_publisher.list /etc/ros/rosdep/sources.list.d/00-plusai_hmi_can_publisher.list
+rm -rf packages
+mkdir -p packages
 
 rosdep update
 
-cd code
+function build_and_install_package {
+  cd $WORKSPACE
+  to_remove_copy=false
+  if [ ! -d $1 ]; then
+    echo "making directory $1 ..."
+    to_remove_copy=true
+    mkdir -p $1
+    cp -r "include/" "launch/" "src/" "tests/" "tools/" "CMakeLists.txt" "package.xml" $1/
+  fi
+  rosdep install --from-paths $1 --ignore-src -y
+  cd $1/
+  sed -i s/$2/$3/ package.xml
+  rm -rf obj-* debian build
+  echo "-----------------------"
+  echo "Building $1"
+  echo "-----------------------"
+  bloom-generate rosdebian .
+  fakeroot make -d -f debian/rules binary
+  rm -rf obj-* debian build
+  cd $WORKSPACE
+  mv *.deb packages
+  echo "-----------------------"
+  echo "Installing $1 (and other packages)"
+  echo "-----------------------"
+  sudo dpkg -i packages/*.deb
+  if [ "$to_remove_copy" = true ]; then
+    rm -rf $1
+    echo "removed directory $1"
+  fi
+}
 
-old_ver="0.1.0"
-new_ver="0.1.$build_num"
-sed -i s/$old_ver/$new_ver/ package.xml
-
-bloom-generate rosdebian --os-name ubuntu \
-                         --os-version xenial \
-                         --ros-distro kinetic .
- 
-fakeroot make -d -f debian/rules binary
+build_and_install_package "hmi_can_publisher" "0.0.0" "0.1.$build_num"

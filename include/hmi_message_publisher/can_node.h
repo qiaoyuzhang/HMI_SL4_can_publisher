@@ -7,7 +7,7 @@
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/time_synchronizer.h>
 #include "can_common/can_interface.h"
-#include "common/status_report_msg.pb.h"
+#include "monitor/status_report_msg.pb.h"
 #include "monitor/status_reporter.h"
 
 namespace HMI {

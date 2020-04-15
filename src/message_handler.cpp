@@ -1,7 +1,7 @@
 #include "hmi_message_publisher/message_handler.h"
-#include "common/lane_detection.pb.h"
-#include "common/obstacle_detection.pb.h"
-#include "common/planning_trajectory.pb.h"
+#include "perception/lane_detection.pb.h"
+#include "perception/obstacle_detection.pb.h"
+#include "planning/planning_trajectory.pb.h"
 #include "plusmap/common/plusmap_utils.h"
 #include "math/vec2d.h"
 #include <glog/logging.h>

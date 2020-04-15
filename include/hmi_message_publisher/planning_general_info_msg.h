@@ -1,4 +1,4 @@
-#include "common/planning_trajectory.pb.h"
+#include "planning/planning_trajectory.pb.h"
 #include "hmi_message_publisher/const_vars.h"
 #include <vector>
 
